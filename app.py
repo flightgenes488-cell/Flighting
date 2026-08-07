@@ -104,6 +104,11 @@ def login_post():
             return jsonify({'success': False, 'message': 'Invalid username or password.'}), 401
         return "Invalid credentials", 401
 
+@app.route('/api/auth/logout', methods=['POST'])
+def logout_post():
+    session.pop('user_id', None)
+    return jsonify({'success': True, 'redirect': url_for('index')})
+
 # ==========================================
 #          BACKEND INVENTORY API            #
 # ==========================================
@@ -134,6 +139,29 @@ def api_add_item():
 
         return jsonify({"success": True, "message": f"{name} successfully saved to DB!"}), 200
 
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)}), 500
+
+@app.route('/api/inventory', methods=['GET'])
+def get_inventory():
+    # Security: Ensure only the logged-in admin can view the data
+    if 'user_id' not in session:
+        return jsonify({"success": False, "message": "Unauthorized"}), 401
+
+    try:
+        conn = sqlite3.connect(DB_PATH)
+        # Allows accessing columns by name
+        conn.row_factory = sqlite3.Row 
+        cursor = conn.cursor()
+        
+        cursor.execute('SELECT * FROM items ORDER BY id DESC')
+        rows = cursor.fetchall()
+        conn.close()
+
+        # Convert database rows to a list of dictionaries for JavaScript
+        items = [dict(row) for row in rows]
+        
+        return jsonify({"success": True, "items": items}), 200
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
 
