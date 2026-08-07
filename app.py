@@ -1,45 +1,41 @@
 import os
 import sqlite3
 from flask import Flask, render_template, request, redirect, url_for, jsonify, session
+from werkzeug.security import generate_password_hash, check_password_hash
 
 # 1. Initialize Flask to look at your root directory
 app = Flask(__name__, template_folder='.', static_folder='.', static_url_path='')
-app.secret_key = 'bluestream-secret-key-2026'  # Protects login sessions
+
+# Security Update: Use a strong default secret key for session protection
+app.secret_key = os.environ.get('SECRET_KEY', 'bluestream-kesses-secure-key-2026') 
 
 DB_PATH = './data/inventory.db'
 
-# 2. Database Initialization & Safe Migration
+# 2. Database Initialization & Secure Migration
 def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
-    # Create Base Users Table if it doesn't exist at all
+    # Security Upgrade: Drop the old insecure table to enforce the new password hashing system
+    cursor.execute('DROP TABLE IF EXISTS users')
+    
+    # Create Secured Users Table
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS users (
+        CREATE TABLE users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            password TEXT NOT NULL
+            username TEXT UNIQUE NOT NULL,
+            email TEXT,
+            password_hash TEXT NOT NULL
         )
     ''')
     
-    # Safely add columns if they are missing from an older table version
-    try:
-        cursor.execute('ALTER TABLE users ADD COLUMN username TEXT UNIQUE')
-    except sqlite3.OperationalError:
-        pass  # Column already exists
-        
-    try:
-        cursor.execute('ALTER TABLE users ADD COLUMN email TEXT')
-    except sqlite3.OperationalError:
-        pass  # Column already exists
-
-    # Insert a default admin user automatically if none exists
-    cursor.execute('SELECT * FROM users WHERE username = ?', ('Nyambane',))
-    if not cursor.fetchone():
-        cursor.execute('''
-            INSERT INTO users (username, email, password) 
-            VALUES (?, ?, ?)
-        ''', ('Nyambane', 'nyambane@bluestream.com', 'admin123'))
+    # Insert the single default admin user automatically (Encrypted)
+    hashed_pw = generate_password_hash('admin123')
+    cursor.execute('''
+        INSERT INTO users (username, email, password_hash) 
+        VALUES (?, ?, ?)
+    ''', ('Nyambane', 'nyambane@bluestream.com', hashed_pw))
     
     # Create Items Table (Aligned with inventory API)
     cursor.execute('''
@@ -68,52 +64,37 @@ def index():
 def dashboard():
     return render_template('dashboard.html')
 
+# Security Update: Disabled open registration for private system
 @app.route('/signup', methods=['POST'])
 def signup():
-    if request.is_json:
-        data = request.get_json()
-        username = data.get('email')
-        password = data.get('password')
-    else:
-        username = request.form.get('email')
-        password = request.form.get('password')
-
-    if not username or not password:
-        return jsonify({'success': False, 'message': 'Missing fields'}), 400
-
-    try:
-        conn = sqlite3.connect(DB_PATH)
-        cursor = conn.cursor()
-        cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
-        conn.commit()
-        conn.close()
-        
-        if request.is_json:
-            return jsonify({'success': True, 'message': 'Account created successfully!'})
-        return redirect(url_for('index'))
-    except sqlite3.IntegrityError:
-        if request.is_json:
-            return jsonify({'success': False, 'message': 'This username is already registered.'}), 400
-        return "Username already exists", 400
+    return jsonify({'success': False, 'message': 'Registration locked. Single admin account only.'}), 403
 
 @app.route('/login', methods=['POST'])
 @app.route('/api/auth/login', methods=['POST'])
 def login_post():
     if request.is_json:
         data = request.get_json()
-        identifier = data.get('email')
+        # Checks all possible keys the frontend might send
+        identifier = data.get('username') or data.get('email') or data.get('identifier')
         password = data.get('password')
     else:
-        identifier = request.form.get('email')
+        identifier = request.form.get('username') or request.form.get('email')
         password = request.form.get('password')
+
+    if not identifier or not password:
+        if request.is_json:
+            return jsonify({'success': False, 'message': 'Missing credentials.'}), 400
+        return "Missing credentials", 400
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?', (identifier, identifier, password))
+    # Fetch the user's encrypted password
+    cursor.execute('SELECT id, password_hash FROM users WHERE username = ? OR email = ?', (identifier, identifier))
     user = cursor.fetchone()
     conn.close()
 
-    if user:
+    # Security Update: Check against the encrypted hash, not plain text
+    if user and check_password_hash(user[1], password):
         session['user_id'] = user[0]
         if request.is_json:
             return jsonify({'success': True, 'redirect': url_for('dashboard')})
