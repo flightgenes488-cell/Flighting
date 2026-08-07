@@ -28,9 +28,9 @@ def init_db():
     cursor.execute('SELECT * FROM users WHERE username = ?', ('Nyambane',))
     if not cursor.fetchone():
         cursor.execute('''
-            INSERT INTO users (username, email, password) 
+            INSERT INTO users (username, password) 
             VALUES (?, ?, ?)
-        ''', ('Nyambane', 'nyambane@bluestream.com', 'admin123'))
+        ''', ('Nyambane',  'admin123'))
     
     # Create Items Table (Aligned with inventory API)
     cursor.execute('''
