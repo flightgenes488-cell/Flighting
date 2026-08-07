@@ -23,15 +23,17 @@ def init_db():
         )
     ''')
     
-    # Create Inventory Table (Ready for your dashboard!)
+    # Create Items Table (Aligned with inventory API)
     cursor.execute('''
-        CREATE TABLE IF NOT EXISTS inventory (
+        CREATE TABLE IF NOT EXISTS items (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
-            sku TEXT UNIQUE,
-            quantity INTEGER NOT NULL,
-            price REAL NOT NULL,
-            category TEXT
+            category TEXT,
+            stock_qty INTEGER NOT NULL,
+            unit TEXT,
+            unit_cost REAL NOT NULL,
+            total_value REAL NOT NULL,
+            status TEXT
         )
     ''')
     conn.commit()
@@ -78,6 +80,7 @@ def signup():
         return "Email already exists", 400
 
 @app.route('/login', methods=['POST'])
+@app.route('/api/auth/login', methods=['POST'])
 def login_post():
     if request.is_json:
         data = request.get_json()
@@ -102,9 +105,6 @@ def login_post():
         if request.is_json:
             return jsonify({'success': False, 'message': 'Invalid email or password.'}), 401
         return "Invalid credentials", 401
-from flask import jsonify, request
-
-# EXISTING ROUTES HERE...
 
 # ==========================================
 #          BACKEND INVENTORY API            #
@@ -125,8 +125,7 @@ def api_add_item():
         status = "High" if qty > 50 else ("Medium" if qty >= 10 else "Low")
 
         # --- DATABASE INSERTION ---
-        # Connect to your existing SQLite database safely
-        conn = sqlite3.connect('inventory.db') # Change name if your db file is named differently
+        conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         
         cursor.execute('''
@@ -141,5 +140,6 @@ def api_add_item():
 
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+
 if __name__ == '__main__':
     app.run(debug=True)
