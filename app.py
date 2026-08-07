@@ -8,20 +8,29 @@ app.secret_key = 'bluestream-secret-key-2026'  # Protects login sessions
 
 DB_PATH = './data/inventory.db'
 
-# 2. Database Initialization (Runs automatically when server starts)
+# 2. Database Initialization & Default Admin Creation
 def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
-    # Create Users Table
+    # Create Users Table with username support
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            email TEXT UNIQUE NOT NULL,
+            username TEXT UNIQUE NOT NULL,
+            email TEXT,
             password TEXT NOT NULL
         )
     ''')
+    
+    # Insert a default admin user automatically if none exists
+    cursor.execute('SELECT * FROM users WHERE username = ?', ('Nyambane',))
+    if not cursor.fetchone():
+        cursor.execute('''
+            INSERT INTO users (username, email, password) 
+            VALUES (?, ?, ?)
+        ''', ('Nyambane', 'nyambane@bluestream.com', 'admin123'))
     
     # Create Items Table (Aligned with inventory API)
     cursor.execute('''
@@ -52,22 +61,21 @@ def dashboard():
 
 @app.route('/signup', methods=['POST'])
 def signup():
-    # Detect if data came via JS Fetch (JSON) or standard HTML Form submission
     if request.is_json:
         data = request.get_json()
-        email = data.get('email')
+        username = data.get('email')  # Fallback if form sends email as username
         password = data.get('password')
     else:
-        email = request.form.get('email')
+        username = request.form.get('email')
         password = request.form.get('password')
 
-    if not email or not password:
+    if not username or not password:
         return jsonify({'success': False, 'message': 'Missing fields'}), 400
 
     try:
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
-        cursor.execute('INSERT INTO users (email, password) VALUES (?, ?)', (email, password))
+        cursor.execute('INSERT INTO users (username, password) VALUES (?, ?)', (username, password))
         conn.commit()
         conn.close()
         
@@ -76,23 +84,24 @@ def signup():
         return redirect(url_for('index'))
     except sqlite3.IntegrityError:
         if request.is_json:
-            return jsonify({'success': False, 'message': 'This email is already registered.'}), 400
-        return "Email already exists", 400
+            return jsonify({'success': False, 'message': 'This username is already registered.'}), 400
+        return "Username already exists", 400
 
 @app.route('/login', methods=['POST'])
 @app.route('/api/auth/login', methods=['POST'])
 def login_post():
     if request.is_json:
         data = request.get_json()
-        email = data.get('email')
+        identifier = data.get('email')  # JavaScript might send username/email through 'email' key
         password = data.get('password')
     else:
-        email = request.form.get('email')
+        identifier = request.form.get('email')
         password = request.form.get('password')
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    cursor.execute('SELECT * FROM users WHERE email = ? AND password = ?', (email, password))
+    # Check against either username or email
+    cursor.execute('SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?', (identifier, identifier, password))
     user = cursor.fetchone()
     conn.close()
 
@@ -103,7 +112,7 @@ def login_post():
         return redirect(url_for('dashboard'))
     else:
         if request.is_json:
-            return jsonify({'success': False, 'message': 'Invalid email or password.'}), 401
+            return jsonify({'success': False, 'message': 'Invalid username or password.'}), 401
         return "Invalid credentials", 401
 
 # ==========================================
@@ -121,10 +130,8 @@ def api_add_item():
         cost = float(data.get('unitCost', 0.0))
         total_value = qty * cost
         
-        # Calculate stock status threshold automatically
         status = "High" if qty > 50 else ("Medium" if qty >= 10 else "Low")
 
-        # --- DATABASE INSERTION ---
         conn = sqlite3.connect(DB_PATH)
         cursor = conn.cursor()
         
