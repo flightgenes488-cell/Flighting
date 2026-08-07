@@ -1,0 +1,1233 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FLIGHTING | Central Management System</title>
+    <style>
+        /* --- GLOBAL VARIABLES & RESET --- */
+        :root {
+            --primary: #1e293b;
+            --secondary: #334155;
+            --accent: #2563eb;
+            --success: #16a34a;
+            --danger: #dc2626;
+            --warning: #ca8a04;
+            --bg: #f8fafc;
+            --text: #0f172a;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --purple: #7c3aed;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; }
+
+        /* --- AUTHENTICATION SCREEN --- */
+        #auth-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary); display: flex; justify-content: center; align-items: center; z-index: 1000;
+        }
+        .auth-box {
+            background: var(--white); padding: 40px; border-radius: 8px; width: 380px; text-align: center; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .auth-box h1 { color: var(--accent); margin-bottom: 5px; font-size: 28px; text-transform: uppercase;}
+        .slogan-text { font-size: 13px; font-style: italic; color: #64748b; margin-bottom: 25px; font-weight: 600; letter-spacing: 0.5px;}
+        .auth-box input, .auth-box select { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid var(--border); border-radius: 4px; }
+
+        /* --- LAYOUT: SIDEBAR & MAIN --- */
+        #app-container { display: none; width: 100%; height: 100%; }
+        .sidebar { width: 260px; background: var(--primary); color: var(--white); display: flex; flex-direction: column; flex-shrink: 0; }
+        .brand { padding: 15px 20px 5px 20px; font-size: 24px; font-weight: bold; text-align: center; letter-spacing: 1px; color: #60a5fa;}
+        .sidebar-slogan { font-size: 11px; text-align: center; font-style: italic; color: #94a3b8; padding-bottom: 15px; border-bottom: 1px solid var(--secondary); margin-bottom: 5px;}
+        .nav-links { list-style: none; flex-grow: 1; overflow-y: auto; padding: 10px 0; }
+        .nav-links li { padding: 12px 20px; cursor: pointer; border-left: 4px solid transparent; transition: 0.2s; font-size: 14px; }
+        .nav-links li:hover, .nav-links li.active { background: var(--secondary); border-left-color: var(--accent); }
+        .user-info-bar { padding: 15px; background: #0f172a; text-align: center; font-size: 14px; border-top: 1px solid var(--secondary); }
+        
+        .main-content { flex-grow: 1; overflow-y: auto; padding: 30px; background: var(--bg); position: relative; }
+        .sector { display: none; animation: fadeIn 0.3s; }
+        .sector.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* --- COMPONENTS --- */
+        h2 { margin-bottom: 20px; color: var(--primary); border-bottom: 2px solid var(--border); padding-bottom: 10px; }
+        .card { background: var(--white); border-radius: 8px; padding: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; border: 1px solid var(--border); }
+        .flex-row { display: flex; gap: 20px; flex-wrap: wrap; }
+        .flex-col { flex: 1; min-width: 300px; }
+        
+        /* Tables */
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 14px; }
+        th, td { padding: 12px 15px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: #f1f5f9; font-weight: 600; color: var(--secondary); text-transform: uppercase; font-size: 12px; }
+        tbody tr:hover { background: #f8fafc; }
+        
+        /* Forms & Buttons */
+        input[type="text"], input[type="password"], input[type="number"], select, textarea { width: 100%; padding: 8px; border: 1px solid var(--border); border-radius: 4px; box-sizing: border-box; font-family: inherit;}
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 13px; color: var(--secondary);}
+        .form-category-box { background: #f8fafc; border: 1px solid var(--border); border-radius: 6px; padding: 15px; margin-bottom: 15px; }
+        .form-category-title { font-size: 12px; font-weight: bold; text-transform: uppercase; color: var(--accent); margin-bottom: 10px; border-bottom: 1px dashed var(--border); padding-bottom: 4px; }
+        
+        .btn { padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; font-size: 13px; transition: 0.2s; color: var(--white); display: inline-block;}
+        .btn-primary { background: var(--accent); } .btn-primary:hover { background: #1d4ed8; }
+        .btn-success { background: var(--success); } .btn-success:hover { background: #15803d; }
+        .btn-danger { background: var(--danger); } .btn-danger:hover { background: #b91c1c; }
+        .btn-warning { background: var(--warning); color: #000; } .btn-warning:hover { background: #b45309; color: #fff;}
+        .btn-purple { background: var(--purple); } .btn-purple:hover { background: #6d28d9; }
+        .btn-dark { background: var(--primary); } .btn-dark:hover { background: #0f172a; }
+        .badge { padding: 4px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; }
+        
+        /* POS Layout */
+        .pos-grid { display: grid; grid-template-columns: 1.8fr 1.2fr; gap: 20px; }
+        .cart-list { max-height: 300px; overflow-y: auto; border: 1px solid var(--border); padding: 10px; background: #f9fafb; border-radius: 4px;}
+        .cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ddd; padding: 10px 0; }
+        
+        /* Analytics Layout */
+        .analytics-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px; }
+        .analytic-card { padding: 20px; border-radius: 8px; background: white; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
+        .analytic-card h4 { font-size: 12px; text-transform: uppercase; color: #64748b; margin-bottom: 5px; }
+        .analytic-card .metric { font-size: 22px; font-weight: bold; color: var(--primary); }
+        
+        .analytical-section { background: var(--white); border-radius: 8px; padding: 25px; margin-bottom: 25px; border: 1px solid var(--border); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .analytical-section h3 { font-size: 16px; color: var(--primary); border-bottom: 1px solid var(--border); padding-bottom: 10px; margin-bottom: 15px; }
+        .mini-stat { text-align: center; background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 6px; }
+        .mini-stat h5 { font-size: 11px; text-transform: uppercase; color: #64748b; margin-bottom: 5px; }
+        .mini-stat span { font-size: 16px; font-weight: bold; color: var(--accent); }
+
+        .chart-container { background: #0f172a; border-radius: 8px; padding: 25px; color: #cbd5e1; border: 1px solid #334155; }
+        .chart-y-axis { display: flex; flex-direction: column; justify-content: space-between; height: 220px; color: #64748b; font-size: 11px; font-family: monospace; text-align: right; padding-right: 10px; }
+        .chart-bars { display: flex; align-items: flex-end; justify-content: space-around; flex-grow: 1; height: 220px; border-left: 2px solid #334155; border-bottom: 2px solid #334155; padding-left: 10px; position: relative;}
+        .chart-grid-line { position: absolute; left: 0; right: 0; border-top: 1px dashed #334155; height: 0; pointer-events: none;}
+        .bar-wrapper { display: flex; flex-direction: column; align-items: center; width: 12%; position: relative; z-index: 2;}
+        .bar { width: 100%; border-radius: 4px 4px 0 0; position: relative; transition: height 0.5s ease; cursor: pointer;}
+        .bar:hover { filter: brightness(1.2); }
+        .bar-tooltip { position: absolute; top: -25px; background: #334155; color: white; padding: 2px 6px; font-size: 10px; border-radius: 4px; display: none; font-family: monospace; white-space: nowrap; z-index: 10;}
+        .bar-wrapper:hover .bar-tooltip { display: block; }
+        .bar-label { margin-top: 8px; font-size: 11px; color: #94a3b8; font-weight: 500;}
+
+        /* Financial Statements Styling */
+        .bs-container { display: flex; gap: 20px; align-items: flex-start; }
+        .bs-box { flex: 1; background: #fff; border: 1px solid var(--border); border-radius: 6px; }
+        .bs-header { background: #f1f5f9; padding: 10px 15px; font-weight: bold; border-bottom: 1px solid var(--border); font-size: 13px; text-transform: uppercase;}
+        .bs-row { display: flex; justify-content: space-between; padding: 10px 15px; border-bottom: 1px dashed #e2e8f0; font-size: 14px;}
+        .bs-total { display: flex; justify-content: space-between; padding: 12px 15px; font-weight: bold; background: #f8fafc; font-size: 15px;}
+        
+        /* Dynamic Pie Chart */
+        .pie-chart { width: 180px; height: 180px; border-radius: 50%; background: conic-gradient(#2563eb 0% 40%, #16a34a 40% 70%, #dc2626 70% 100%); margin: 0 auto;}
+        
+        /* Balance Alert */
+        .balance-alert { padding: 15px; border-radius: 6px; font-weight: bold; font-size: 14px; margin-top: 15px; text-align: center; }
+        .balance-alert.ok { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
+        .balance-alert.error { background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+
+        /* --- PRINT STYLES --- */
+        #print-area { display: none; }
+        @media print {
+            body * { visibility: hidden; }
+            #print-area, #print-area * { visibility: visible; }
+            #print-area { display: block; position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 20px; }
+            .receipt-mode { width: 300px; font-family: monospace; font-size: 12px; margin: 0 auto; color: #000; }
+            .receipt-mode h3 { text-align: center; margin: 0 0 5px 0; font-size: 16px; font-weight: bold; }
+            .receipt-mode p { text-align: center; margin: 0 0 10px 0; font-size: 11px; border-bottom: 1px dashed #000; padding-bottom: 5px;}
+            .receipt-mode table { width: 100%; border-collapse: collapse; margin-bottom: 10px; }
+            .receipt-mode th, .receipt-mode td { border: none; padding: 5px 2px; text-align: left; font-size: 11px;}
+            .receipt-mode th { border-bottom: 1px solid #000; }
+            .receipt-mode td { border-bottom: 1px dashed #ddd; }
+            .receipt-mode .totals { text-align: right; font-weight: bold; margin-top: 10px; border-top: 1px solid #000; padding-top: 5px; font-size: 14px;}
+            .receipt-mode .caution { text-align: center; font-size: 11px; margin-top: 20px; font-weight: bold; border-top: 1px dashed #000; padding-top: 10px; line-height: 1.4;}
+            .transfer-mode { width: 100%; font-family: sans-serif; }
+            .transfer-mode h2 { text-align: center; text-transform: uppercase; border-bottom: 2px solid #000; padding-bottom: 10px; margin-bottom: 20px;}
+            .transfer-mode table th, .transfer-mode table td { border: 1px solid #000; padding: 10px; }
+            .signatures { display: flex; justify-content: space-between; margin-top: 50px; font-weight: bold; }
+        }
+    </style>
+</head>
+<body onload="initApp()">
+
+    <div id="auth-screen">
+        <div class="auth-box">
+            <h1>FLIGHTING</h1>
+            <p class="slogan-text">Welcome Back, CEO. Together We Rise.</p>
+            <input type="text" id="login-user" placeholder="Username" value="Nyambane">
+            <input type="password" id="login-pass" placeholder="Password" value="@20werise">
+            <button class="btn btn-primary" style="width: 100%; font-size: 16px; padding: 10px;" onclick="executeLogin()">Secure Login</button>
+            
+            <div style="margin-top: 20px; border-top: 1px solid #eee; padding-top: 15px;">
+                <p style="font-size: 13px; font-weight: bold; margin-bottom: 10px; color: #475569;">Register New User Account</p>
+                <input type="text" id="reg-user" placeholder="Desired Username">
+                <input type="password" id="reg-pass" placeholder="Create Secure Password">
+                <select id="reg-role">
+                    <option value="CEO">Chief Executive Officer (CEO)</option>
+                    <option value="Finance">Finance Manager</option>
+                    <option value="Admin">System Admin</option>
+                    <option value="Sales">Sales Agent</option>
+                    <option value="HR">HR Manager</option>
+                    <option value="Logistics Manager">Logistics Manager</option>
+                    <option value="Store Manager">Store / Stock Manager</option>
+                </select>
+                <button class="btn btn-success" style="width: 100%; padding: 10px;" onclick="requestAccess()">Submit Access Request</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="app-container">
+        <div class="sidebar">
+            <div class="brand">FLIGHTING</div>
+            <div class="sidebar-slogan">Together We Rise</div>
+            <div class="user-info-bar">
+                <span style="display:block; font-weight:bold; color:#38bdf8;" id="sidebar-name">Name</span>
+                <span style="font-size: 11px; color: #94a3b8;" id="sidebar-role">Role</span>
+            </div>
+            <ul class="nav-links">
+                <li onclick="nav('home')" id="nav-home" class="active">🏠 Home Dashboard</li>
+                <li onclick="nav('inventory')" id="nav-inventory">📦 Items & Inventory</li>
+                <li onclick="nav('sales')" id="nav-sales">🛒 Sales (Bluestream)</li>
+                <li onclick="nav('requisitions')" id="nav-requisitions">📝 Requisitions Desk</li>
+                <li onclick="nav('logistics')" id="nav-logistics">🚚 Logistics & Fleet</li>
+                <li onclick="nav('transfer')" id="nav-transfer">🔄 Stock Transfers</li>
+                <li onclick="nav('procurement')" id="nav-procurement">🏭 Vendor Procurement</li>
+                <li onclick="nav('accounts')" id="nav-accounts">📔 Books of Accounts</li>
+                <li onclick="nav('stats')" id="nav-stats">📈 Detailed Statistics</li>
+                <li onclick="nav('finance')" id="nav-finance">💰 Finance Ledger</li>
+                <li onclick="nav('hr')" id="nav-hr">👥 HR Sector</li>
+                <li onclick="nav('announcements')" id="nav-announcements">📢 Announcements</li>
+                <li onclick="executeLogout()" style="color: #f87171; margin-top: 20px; border-top: 1px solid var(--secondary);">🚪 Log Out</li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            
+            <div id="sector-home" class="sector active">
+                <h2>Welcome, <span id="dash-name" style="color:var(--accent);">User</span></h2>
+                
+                <div class="flex-row">
+                    <div class="card flex-col" style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white;">
+                        <h3>System Connection Overview</h3>
+                        <p style="margin-top: 10px; font-size: 24px; font-weight: bold;">Registered Database Profiles: <span id="stat-user-count" style="color: #38bdf8;">0</span></p>
+                        <p style="font-size: 13px; opacity: 0.8; margin-top: 5px;">Gateway Status: Active, Encrypted & Persistent</p>
+                    </div>
+                    
+                    <div class="card flex-col" style="background: white; border-left: 4px solid var(--purple);">
+                        <h3>⚡ Quick Utility Tools</h3>
+                        <p style="font-size: 12px; color: #64748b; margin-bottom: 10px;">Instant operational margin helper.</p>
+                        <div class="flex-row" style="gap: 10px;">
+                            <input type="number" id="util-cost" placeholder="Wholesale Cost" style="flex:1; padding: 6px;" onkeyup="calculateQuickMargin()">
+                            <input type="number" id="util-retail" placeholder="Retail Price" style="flex:1; padding: 6px;" onkeyup="calculateQuickMargin()">
+                        </div>
+                        <div style="margin-top: 10px; font-size: 13px; font-weight: bold; color: var(--secondary);">
+                            Calculated Target Gross Margin: <span id="util-margin-res" style="color: var(--purple);">Ksh 0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card admin-only" style="display: none;">
+                    <h3>🛡️ Executive Access Security Controls</h3>
+                    <p style="font-size: 13px; color: #64748b; margin-bottom: 15px;">Manage active directory profiles and approve pending site registrations.</p>
+                    <table>
+                        <thead><tr><th>Username</th><th>Requested Role</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="user-approval-table"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="sector-inventory" class="sector">
+                <h2>Master Items & Stock Management</h2>
+                
+                <div class="card admin-only" style="display: none; background: #f8fafc; border: 1px solid #cbd5e1;">
+                    <h3 style="margin-bottom: 10px;">➕ Provision New Item Profile</h3>
+                    <div class="flex-row">
+                        <div class="form-group flex-col"><label>Description</label><input type="text" id="inv-new-name" placeholder="e.g. 2 INCH COUPLING"></div>
+                        <div class="form-group flex-col"><label>Opening Stock Qty</label><input type="number" id="inv-new-qty" placeholder="0"></div>
+                        <div class="form-group flex-col"><label>Wholesale Cost (Ksh)</label><input type="number" id="inv-new-wholesale" placeholder="0.00"></div>
+                        <div class="form-group flex-col"><label>Suggested Retail (Ksh)</label><input type="number" id="inv-new-retail" placeholder="0.00"></div>
+                    </div>
+                    <button class="btn btn-success" onclick="addNewInventoryItem()">Add Item to Catalog</button>
+                </div>
+
+                <div class="card">
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Item Description</th>
+                                    <th>Quantity in Stock</th>
+                                    <th>Wholesale Cost</th>
+                                    <th>Retail Cost</th>
+                                    <th id="th-inventory-margin">Net Margin</th>
+                                    <th>Modifications</th>
+                                </tr>
+                            </thead>
+                            <tbody id="inventory-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sector-sales" class="sector">
+                <h2>Bluestream Hardware & Plumbing - Counter POS Desk</h2>
+                <div class="pos-grid">
+                    <div class="card">
+                        <h3>Inventory Catalog Stock</h3>
+                        <input type="text" id="pos-search" placeholder="Filter items instantly..." onkeyup="filterPOS()" style="margin-bottom: 15px;">
+                        <div style="max-height: 420px; overflow-y: auto; border: 1px solid var(--border);">
+                            <table style="margin-top: 0;">
+                                <thead><tr><th>Item</th><th>Stock Status</th><th>Standard Price</th><th>Action</th></tr></thead>
+                                <tbody id="pos-catalog"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card" style="background: #f8fafc; border: 2px solid var(--accent);">
+                        <h3>Active Sales Ticket</h3>
+                        <div class="form-group" style="margin-top: 10px;">
+                            <input type="text" id="pos-customer" placeholder="Customer / Contractor Account (Optional)">
+                        </div>
+                        <div class="cart-list" id="pos-cart">
+                            <p style="font-size: 12px; color: #94a3b8; text-align: center; margin-top: 20px;">No items staged in ticket</p>
+                        </div>
+                        <div style="margin-top: 15px; font-size: 20px; font-weight: bold; text-align: right; color: var(--primary);">
+                            Total Due: Ksh <span id="pos-total">0.00</span>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%; margin-top: 15px; padding: 12px; font-size: 15px;" onclick="executeSale()">
+                            🖨️ Commit Bill, Print Ticket & Update Ledger
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sector-requisitions" class="sector">
+                <h2>Internal Operational Requisitions Desk</h2>
+                <div style="background:#e0f2fe; color:#0369a1; padding:10px 15px; border-radius:4px; font-size:13px; margin-bottom:15px; font-weight:bold; border: 1px solid #bae6fd;">
+                    ⚠️ Reminder: Please submit operational and material requests at least 48 hours priorly to ensure timely processing and budget allocation. 
+                </div>
+                <div class="card">
+                    <h3>File Expense / Material Request Document</h3>
+                    <div class="flex-row" style="align-items: flex-end;">
+                        <div class="form-group flex-col" style="flex:1.5;"><label>Item / Resource Requested</label><input type="text" id="req-item" placeholder="e.g. Office Stationary Procurement"></div>
+                        <div class="form-group flex-col" style="flex:1;"><label>Estimated Budget Cost (Ksh)</label><input type="number" id="req-cost" placeholder="0"></div>
+                        <div class="form-group flex-col" style="flex:2;"><label>Business Justification / Reason</label><input type="text" id="req-reason" placeholder="State operational reason clearly"></div>
+                        <div class="form-group"><button class="btn btn-success" style="margin-bottom: 2px;" onclick="addReq()">Log Desk Request</button></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Pending Corporate Requisitions Ledger</h3>
+                    <table>
+                        <thead><tr><th>Requested By</th><th>Item Profile</th><th>Est. Budget</th><th>Justification Reason</th><th>Status</th><th>Actions</th></tr></thead>
+                        <tbody id="req-table"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="sector-logistics" class="sector">
+                <h2>Logistics Pipeline & Vehicle Fleet Registry</h2>
+                <div class="card">
+                    <button class="btn btn-primary" style="margin-bottom: 15px;" onclick="addDriverPrompt()">+ Register Dispatch Unit / Vehicle</button>
+                    <table>
+                        <thead><tr><th>Driver Profile</th><th>Fleet ID Reg</th><th>Transit Status</th><th>Logged Expenses</th><th>Agenda / Route Info</th><th>Actions</th></tr></thead>
+                        <tbody id="logistics-table"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="sector-transfer" class="sector">
+                <h2>Inter-Store Inventory Transfer Form</h2>
+                <div class="card" style="max-width: 650px; margin: 0 auto; background: #fffbeb; border-color: #fcd34d;">
+                    <h3 style="color: var(--warning); border-bottom: 1px solid #fde68a; padding-bottom: 10px;">Authorize Stock Transfer Voucher</h3>
+                    <div class="form-group" style="margin-top:15px;"><label>Items Allocated for Dispatch (Editable Grid)</label><textarea id="st-items" rows="3" placeholder="Specify counts and description profiles line-by-line..."></textarea></div>
+                    <div class="flex-row">
+                        <div class="form-group flex-col"><label>Originating Depot (From)</label><input type="text" id="st-from" value="Main Storage Hub"></div>
+                        <div class="form-group flex-col"><label>Destination Facility (To)</label><input type="text" id="st-to" placeholder="Receiving branch location"></div>
+                    </div>
+                    <div class="form-group"><label>Transit Officer on Escort</label><input type="text" id="st-driver" placeholder="Assigned fleet operator name"></div>
+                    <button class="btn btn-warning" style="width: 100%; font-size:14px; padding:10px;" onclick="printTransfer()">🖨️ Authorize & Print Waybill Documentation</button>
+                </div>
+            </div>
+
+            <div id="sector-procurement" class="sector">
+                <h2>Supply Chain & Vendor Procurement Desk</h2>
+                <div class="card">
+                    <h3>Log B2B Supplier Purchasing Pipeline</h3>
+                    <div class="flex-row">
+                        <div class="form-group flex-col"><label>Supplier Name</label><input type="text" id="pro-vendor" placeholder="e.g. East African Pipes Ltd"></div>
+                        <div class="form-group flex-col"><label>Material/Item Description</label><input type="text" id="pro-item" placeholder="e.g. 500 Pcs PPR Couplings"></div>
+                        <div class="form-group flex-col"><label>Contract Value (Ksh)</label><input type="number" id="pro-cost" placeholder="0.00"></div>
+                        <div class="form-group flex-col"><label>Status Tracking</label>
+                            <select id="pro-status">
+                                <option>Ordered / Awaiting Cargo</option>
+                                <option>In Transit / Customs</option>
+                                <option>Delivered & Reconciled</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button class="btn btn-purple" onclick="addProcurementOrder()">Log Procurement Order</button>
+                </div>
+                <div class="card">
+                    <h3>Active B2B Corporate Supply Chains</h3>
+                    <table>
+                        <thead><tr><th>Supplier Entity</th><th>Material Allocation</th><th>Contract Cost</th><th>Fulfillment Status</th><th>Action</th></tr></thead>
+                        <tbody id="procurement-table"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="sector-accounts" class="sector">
+                <h2>Books of Accounts & Balance Sheet</h2>
+                <p style="font-size: 13px; color: var(--danger); font-weight: bold; margin-bottom: 15px;">🔒 Restricted Area: Highly Detailed Master Ledger for Executives.</p>
+                
+                <div class="card" style="background: #f8fafc;">
+                    <div class="analytical-section">
+                        <h3>📈 Income & Expense Statement (Profit & Loss)</h3>
+                        <div class="bs-container">
+                            <div class="bs-box">
+                                <div class="bs-header">Revenues & Inflows</div>
+                                <div class="bs-row"><span>Gross Sales Revenue (POS)</span><span id="bs-rev-sales">0.00</span></div>
+                                <div class="bs-row"><span>Other Inbound Income</span><span id="bs-rev-other">0.00</span></div>
+                                <div class="bs-total"><span>Total Income</span><span id="bs-rev-total" style="color: var(--success);">0.00</span></div>
+                            </div>
+                            <div class="bs-box">
+                                <div class="bs-header">Expenses & Outflows</div>
+                                <div class="bs-row"><span>Cost of Goods Sold (COGS)</span><span id="bs-exp-cogs">0.00</span></div>
+                                <div class="bs-row"><span>Operational & Overhead</span><span id="bs-exp-op">0.00</span></div>
+                                <div class="bs-total"><span>Total Expenses</span><span id="bs-exp-total" style="color: var(--danger);">0.00</span></div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 15px; background: #0f172a; color: white; padding: 15px; border-radius: 6px; text-align: right; font-size: 18px;">
+                            <strong>Calculated Net Profit / (Loss):</strong> <span id="bs-net-income" style="color: var(--accent); margin-left: 10px;">Ksh 0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="analytical-section">
+                        <div style="display:flex; justify-content: space-between; align-items:center; margin-bottom: 15px; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+                            <h3 style="margin: 0; border: none; padding: 0;">⚖️ Master Balance Sheet</h3>
+                            <button class="btn btn-dark" id="btn-edit-capital" onclick="editMasterAccountsPrompt()" style="font-size: 11px;">Edit Capital, Debts, & Accounts Payable</button>
+                        </div>
+                        
+                        <div class="bs-container">
+                            <div class="bs-box">
+                                <div class="bs-header">Assets (Current & Fixed)</div>
+                                <div class="bs-row"><span>Audited Cash & Bank Balance</span><span id="bs-ast-cash">0.00</span></div>
+                                <div class="bs-row"><span>Current Inventory Value</span><span id="bs-ast-inv">0.00</span></div>
+                                <div class="bs-total"><span>Total Assets</span><span id="bs-ast-total" style="color: var(--accent);">0.00</span></div>
+                            </div>
+                            <div class="bs-box">
+                                <div class="bs-header">Liabilities & Equity</div>
+                                <div class="bs-row"><span>Accounts Payable (Procurement)</span><span id="bs-lia-ap">0.00</span></div>
+                                <div class="bs-row"><span>Pending HR/Works Payments</span><span id="bs-lia-hr">0.00</span></div>
+                                <div class="bs-row"><span>Long-Term Loans / Debt</span><span id="bs-lia-loans">0.00</span></div>
+                                <div class="bs-row"><span>Owner's Equity Capital</span><span id="bs-equ-cap">0.00</span></div>
+                                <div class="bs-row"><span>Retained Net Earnings</span><span id="bs-equ-ret">0.00</span></div>
+                                <div class="bs-total"><span>Total Liabilities & Equity</span><span id="bs-lia-total" style="color: var(--accent);">0.00</span></div>
+                            </div>
+                        </div>
+
+                        <div id="balance-diagnostic" class="balance-alert">
+                            Evaluating Sheet Balance...
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sector-stats" class="sector">
+                <h2>Ultra-Analytical Operations Dashboard</h2>
+                
+                <div class="analytics-grid">
+                    <div class="analytic-card" style="border-left: 4px solid var(--accent);">
+                        <h4>Gross Dynamic Revenue</h4>
+                        <div class="metric" id="an-gross">Ksh 0.00</div>
+                    </div>
+                    <div class="analytic-card" style="border-left: 4px solid var(--danger);">
+                        <h4>Aggregated Total Expenses</h4>
+                        <div class="metric" id="an-expenses" style="color: var(--danger);">Ksh 0.00</div>
+                    </div>
+                    <div class="analytic-card" style="border-left: 4px solid var(--warning);">
+                        <h4>Inventory Asset Value</h4>
+                        <div class="metric" id="an-inv-val" style="color: var(--warning);">Ksh 0.00</div>
+                    </div>
+                    <div class="analytic-card" style="border-left: 4px solid var(--success); background: #f0fdf4;">
+                        <h4>Net Audited Yield</h4>
+                        <div class="metric" id="an-net" style="color: var(--success);">Ksh 0.00</div>
+                    </div>
+                </div>
+
+                <div class="analytical-section">
+                    <h3>📅 Business Flow Matrix & Velocity Analytics</h3>
+                    <div class="flex-row">
+                        <div class="flex-col mini-stat" style="flex:1;">
+                            <h5>Total Unit Volume Moved</h5>
+                            <span style="color: var(--purple); font-size: 24px;" id="an-unit-volume">0 Units</span>
+                        </div>
+                        <div class="flex-col mini-stat" style="flex:2;">
+                            <h5>Top Performing Item Vector</h5>
+                            <span style="color: var(--primary);" id="an-top-item">Evaluating...</span>
+                        </div>
+                        <div class="flex-col" style="flex:1; text-align:center;">
+                            <h5 style="font-size: 11px; text-transform: uppercase; color: #64748b; margin-bottom: 10px;">Revenue vs Expense Share</h5>
+                            <div class="pie-chart" id="stat-pie-chart"></div>
+                            <div style="font-size: 11px; color: #64748b; margin-top: 10px;">
+                                <span style="color: #2563eb; font-weight:bold;">■ Rev</span> &nbsp;
+                                <span style="color: #dc2626; font-weight:bold;">■ Exp</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="analytical-section">
+                    <h3>📊 Detailed Fiscal Performance Spread</h3>
+                    <p style="font-size: 12px; color: #64748b; margin-bottom: 20px;">High fidelity graphic interface displaying revenue variations across sequential periods.</p>
+                    <div class="chart-container flex-row" style="gap:0;">
+                        <div class="chart-y-axis">
+                            <div>2.0M</div><div>1.5M</div><div>1.0M</div><div>500K</div><div>0.0</div>
+                        </div>
+                        <div class="chart-bars" id="dynamic-bar-chart">
+                            <div class="chart-grid-line" style="top: 25%;"></div>
+                            <div class="chart-grid-line" style="top: 50%;"></div>
+                            <div class="chart-grid-line" style="top: 75%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sector-finance" class="sector">
+                <h2>Corporate Cash Ledger & Financial Audits Tracking</h2>
+
+                <div class="flex-row" style="margin-bottom: 20px; align-items: flex-end;">
+                    <div class="flex-col">
+                        <label style="font-size: 12px; font-weight: bold; color: var(--secondary); margin-bottom: 5px; display:block;">Filter Ledger View Period</label>
+                        <select id="fin-filter-period" class="form-control" style="padding: 10px; width: 250px; font-weight:bold;" onchange="renderFinance()">
+                            <option value="all">All-Time Cumulative</option>
+                            <option value="daily">Today's Transactions (Daily)</option>
+                            <option value="weekly">Past 7 Days (Weekly)</option>
+                            <option value="monthly">Current Month</option>
+                            <option value="yearly">Current Fiscal Year</option>
+                        </select>
+                    </div>
+                    <div class="flex-col" style="text-align: right;">
+                        <div style="display: inline-block; background: #fff; border: 1px solid var(--success); padding: 10px 15px; border-radius: 6px; margin-right: 10px; text-align:left;">
+                            <span style="font-size:11px; color:var(--success); text-transform:uppercase; font-weight:bold; display:block;">Total Payments (+)</span>
+                            <span id="fin-sum-pay" style="font-weight:bold; font-size:16px;">Ksh 0.00</span>
+                        </div>
+                        <div style="display: inline-block; background: #fff; border: 1px solid var(--danger); padding: 10px 15px; border-radius: 6px; margin-right: 10px; text-align:left;">
+                            <span style="font-size:11px; color:var(--danger); text-transform:uppercase; font-weight:bold; display:block;">Total Expenses (-)</span>
+                            <span id="fin-sum-exp" style="font-weight:bold; font-size:16px;">Ksh 0.00</span>
+                        </div>
+                        <div style="display: inline-block; background: #fff; border: 1px solid var(--warning); padding: 10px 15px; border-radius: 6px; text-align:left;">
+                            <span style="font-size:11px; color:var(--warning); text-transform:uppercase; font-weight:bold; display:block;">Liabilities Logged</span>
+                            <span id="fin-sum-debt" style="font-weight:bold; font-size:16px;">Ksh 0.00</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card" style="border-left: 4px solid var(--success);">
+                    <h3 style="margin-bottom: 15px; color: var(--success);">➕ Execute Clean Financial Ledger Entry</h3>
+                    
+                    <div class="flex-row">
+                        <div class="flex-col form-category-box">
+                            <div class="form-category-title">Category A: Transaction Core</div>
+                            <div class="form-group">
+                                <label>Entry Type classification</label>
+                                <select id="fin-type">
+                                    <option value="Payment">Customer Payment Input (+)</option>
+                                    <option value="Expense">Operation Expense Output (-)</option>
+                                    <option value="Debt">Corporate Debt Liability Log</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Counterparty Client / Vendor</label>
+                                <input type="text" id="fin-entity" placeholder="e.g. Joel HW / Construction Corp">
+                            </div>
+                            <div class="form-group">
+                                <label>Transactional Purpose / Detailed Rationale</label>
+                                <textarea id="fin-reason" rows="2" placeholder="Provide corporate operational purpose summary context..."></textarea>
+                            </div>
+                        </div>
+
+                        <div class="flex-col form-category-box">
+                            <div class="form-category-title">Category B: Monetary Metrics</div>
+                            <div class="form-group">
+                                <label>Value Amount (Ksh)</label>
+                                <input type="number" id="fin-amount" placeholder="0.00">
+                            </div>
+                            <div class="form-group">
+                                <label>Payment Protocol</label>
+                                <select id="fin-mode">
+                                    <option>M-PESA Terminal</option>
+                                    <option>Bank Direct Wire</option>
+                                    <option>Cheque Settlement</option>
+                                    <option>Cash Vault Handover</option>
+                                    <option>Credit Line Account</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div style="text-align: right; margin-top: 10px;">
+                        <button class="btn btn-success" style="padding: 10px 24px; font-size:14px;" onclick="submitCategorizedFinanceEntry()">Commit Entry to Master Audit Logs</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Comprehensive Accounting Ledger Registers</h3>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Date Entered</th>
+                                    <th>Entry Type</th>
+                                    <th>Counterparty</th>
+                                    <th>Purpose Explanation</th>
+                                    <th>Value Amount</th>
+                                    <th>Protocol</th>
+                                    <th>Clearance Stance</th>
+                                    <th>Modification</th>
+                                </tr>
+                            </thead>
+                            <tbody id="finance-table"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="sector-hr" class="sector">
+                <h2>Corporate Human Capital Registry Matrix</h2>
+                <div class="card">
+                    <table>
+                        <thead><tr><th>Employee Legal Name</th><th>Assigned Core Role</th><th>Activity Status</th><th>Monthly Salary Grade</th><th>Disciplinary / Performance Case</th><th>Management Action</th></tr></thead>
+                        <tbody id="hr-table"></tbody>
+                    </table>
+                    <button class="btn btn-primary" style="margin-top: 15px;" onclick="addEmployeePrompt()">+ Provision New Staff Account File</button>
+                </div>
+            </div>
+
+            <div id="sector-announcements" class="sector">
+                <h2>Company Notices Board & System Broadcasts</h2>
+                <div class="flex-row">
+                    <div class="card flex-col" style="flex: 2;">
+                        <h3>Active Operations Broadcast Matrix</h3>
+                        <div id="announcement-board" style="display: flex; flex-direction: column; gap: 15px; margin-top: 15px;"></div>
+                    </div>
+                    <div class="card flex-col" style="flex: 1; background: #eff6ff; border-color: #bfdbfe;">
+                        <h3 style="color: var(--accent);">Publish Broadcast Note</h3>
+                        <div class="form-group" style="margin-top:15px;"><select id="ann-type"><option>Announcement</option><option>Suggestion</option><option>Complaint</option></select></div>
+                        <div class="form-group"><textarea id="ann-text" rows="5" placeholder="Compose broad note info content here..."></textarea></div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="postAnnouncement()">Commit and Broadcast Note</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="print-area"></div>
+
+    <script>
+        /* ==========================================
+           STATE MANAGEMENT & PERSISTENCE DIRECTORY
+           ========================================== */
+        
+        let currentUser = null;
+
+        // Core App Data Models
+        let users = [];
+        let inventory = [];
+        let currentCart = [];
+        let requisitions = [];
+        let logistics = [];
+        let hrData = [];
+        let finances = [];
+        let procurementOrders = [];
+        let announcements = [];
+        
+        // New Analytics & Account Arrays
+        let salesHistory = [];
+        // Enhanced Accounts Matrix: includes AP, HR Works, Cash/Bank Audited Balances
+        let manualAccounts = { capital: 1500000, longTermDebt: 0, accountsPayable: 0, hrWorks: 0, cashBank: 500000 };
+
+        // Default Data Configuration
+        const defaultUsers = [
+            { id: 1, name: "admin", pass: "admin123", role: "Admin", status: "Approved" },
+            { id: 2, name: "Nyambane", pass: "@20werise", role: "CEO", status: "Approved" },
+            { id: 3, name: "FinanceManager", pass: "finance123", role: "Finance", status: "Approved" },
+            { id: 4, name: "Joel HW", pass: "123", role: "Sales", status: "Approved" },
+            { id: 5, name: "StoreManager", pass: "store123", role: "Store Manager", status: "Approved" },
+            { id: 6, name: "LogManager", pass: "log123", role: "Logistics Manager", status: "Approved" }
+        ];
+        const defaultInventory = [
+            { id: 101, name: '6" GRAY PVC PIPE', qty: 50, wholesale: 1650, retail: 1900 },
+            { id: 102, name: '4" BROWN H PVC', qty: 120, wholesale: 870, retail: 1050 },
+            { id: 103, name: 'PPR SOCKET 20MM', qty: 500, wholesale: 5, retail: 15 }
+        ];
+
+        let analyticChartData = [
+            { tag: 'Jan-Feb', amount: 650000, color: '#3b82f6' },
+            { tag: 'Mar-Apr', amount: 890000, color: '#10b981' },
+            { tag: 'May-Jun', amount: 1250000, color: '#6366f1' },
+            { tag: 'Jul-Aug', amount: 430000, color: '#f59e0b' },
+            { tag: 'Sep-Oct', amount: 1030000, color: '#ec4899' },
+            { tag: 'Nov-Dec', amount: 150000, color: '#64748b' }
+        ];
+
+        /* PERSISTENCE ENGINE */
+        function loadData() {
+            if (localStorage.getItem('flighting_users')) {
+                users = JSON.parse(localStorage.getItem('flighting_users'));
+                inventory = JSON.parse(localStorage.getItem('flighting_inventory'));
+                requisitions = JSON.parse(localStorage.getItem('flighting_requisitions'));
+                logistics = JSON.parse(localStorage.getItem('flighting_logistics'));
+                hrData = JSON.parse(localStorage.getItem('flighting_hrData'));
+                finances = JSON.parse(localStorage.getItem('flighting_finances'));
+                procurementOrders = JSON.parse(localStorage.getItem('flighting_procurementOrders'));
+                announcements = JSON.parse(localStorage.getItem('flighting_announcements'));
+                salesHistory = JSON.parse(localStorage.getItem('flighting_salesHistory') || '[]');
+                
+                let savedAccounts = JSON.parse(localStorage.getItem('flighting_manualAccounts') || '{}');
+                manualAccounts = { ...manualAccounts, ...savedAccounts };
+            } else {
+                users = [...defaultUsers];
+                inventory = [...defaultInventory];
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('flighting_users', JSON.stringify(users));
+            localStorage.setItem('flighting_inventory', JSON.stringify(inventory));
+            localStorage.setItem('flighting_requisitions', JSON.stringify(requisitions));
+            localStorage.setItem('flighting_logistics', JSON.stringify(logistics));
+            localStorage.setItem('flighting_hrData', JSON.stringify(hrData));
+            localStorage.setItem('flighting_finances', JSON.stringify(finances));
+            localStorage.setItem('flighting_procurementOrders', JSON.stringify(procurementOrders));
+            localStorage.setItem('flighting_announcements', JSON.stringify(announcements));
+            localStorage.setItem('flighting_salesHistory', JSON.stringify(salesHistory));
+            localStorage.setItem('flighting_manualAccounts', JSON.stringify(manualAccounts));
+        }
+
+        function initApp() {
+            loadData();
+        }
+
+        /* ==========================================
+           AUTHENTICATION GATEWAY PROTOCOLS
+           ========================================== */
+        
+        function executeLogin() {
+            let u = document.getElementById('login-user').value.trim();
+            let p = document.getElementById('login-pass').value;
+            let found = users.find(x => x.name.toLowerCase() === u.toLowerCase() && x.pass === p);
+            
+            if(found) {
+                if(found.status !== "Approved") return alert("Authentication Hold: Profile status is currently pending admin authorization.");
+                currentUser = found;
+                document.getElementById('auth-screen').style.display = 'none';
+                document.getElementById('app-container').style.display = 'flex';
+                
+                document.getElementById('sidebar-name').innerText = currentUser.name;
+                document.getElementById('sidebar-role').innerText = currentUser.role;
+                document.getElementById('dash-name').innerText = currentUser.name;
+                
+                let adminOnlyElements = document.querySelectorAll('.admin-only');
+                if(['Admin', 'CEO'].includes(currentUser.role)) {
+                    adminOnlyElements.forEach(el => el.style.display = '');
+                } else {
+                    adminOnlyElements.forEach(el => el.style.display = 'none');
+                }
+
+                // Conditional Access Boundaries (Strictly applied as requested)
+                document.getElementById('nav-logistics').style.display = ['CEO', 'Finance', 'Logistics Manager', 'Store Manager'].includes(currentUser.role) ? 'block' : 'none';
+                document.getElementById('nav-transfer').style.display = ['CEO', 'Finance', 'Logistics Manager', 'Store Manager'].includes(currentUser.role) ? 'block' : 'none';
+                document.getElementById('nav-procurement').style.display = ['CEO', 'Finance', 'Logistics Manager', 'Store Manager'].includes(currentUser.role) ? 'block' : 'none';
+                
+                document.getElementById('nav-hr').style.display = ['Admin', 'CEO', 'Finance', 'HR'].includes(currentUser.role) ? 'block' : 'none';
+                document.getElementById('nav-stats').style.display = ['Admin', 'CEO', 'Finance'].includes(currentUser.role) ? 'block' : 'none';
+                document.getElementById('nav-accounts').style.display = ['Admin', 'CEO', 'Finance'].includes(currentUser.role) ? 'block' : 'none';
+
+                if(!['CEO', 'Finance'].includes(currentUser.role)){
+                    document.getElementById('btn-edit-capital').style.display = 'none';
+                } else {
+                    document.getElementById('btn-edit-capital').style.display = 'inline-block';
+                }
+                
+                initAllData();
+            } else {
+                alert("Security Warning: Invalid login credentials.");
+            }
+        }
+
+        function requestAccess() {
+            let user = document.getElementById('reg-user').value.trim();
+            let pass = document.getElementById('reg-pass').value;
+            let role = document.getElementById('reg-role').value;
+            if(!user || !pass) return alert("Validation Error: Please configure username and password.");
+            if(users.some(x => x.name.toLowerCase() === user.toLowerCase())) return alert("Username occupied.");
+
+            users.push({ id: Date.now(), name: user, pass: pass, role: role, status: "Pending" });
+            saveData();
+            alert("Account Request Transmission Successful: Waiting for verification.");
+            document.getElementById('reg-user').value = ''; document.getElementById('reg-pass').value = '';
+        }
+
+        function executeLogout() {
+            currentUser = null;
+            document.getElementById('app-container').style.display = 'none';
+            document.getElementById('auth-screen').style.display = 'flex';
+            document.getElementById('login-pass').value = '';
+            nav('home');
+        }
+
+        function nav(sectorId) {
+            // Enforcement rules
+            if(sectorId === 'logistics' && !['CEO', 'Finance', 'Logistics Manager', 'Store Manager'].includes(currentUser.role)) return alert("Access Denied: Sector restricted to Stock, Logistics, and Executive Management.");
+            if(sectorId === 'transfer' && !['CEO', 'Finance', 'Logistics Manager', 'Store Manager'].includes(currentUser.role)) return alert("Access Denied: Stock transfers require authorized Stock/Logistics credentials.");
+            if(sectorId === 'procurement' && !['CEO', 'Finance', 'Logistics Manager', 'Store Manager'].includes(currentUser.role)) return alert("Access Denied: Procurement strictly controlled by Executives and Supply Chain Management.");
+            if(sectorId === 'accounts' && !['Admin', 'CEO', 'Finance'].includes(currentUser.role)) return alert("Access Violation: Books of Accounts strictly for Executives/Finance.");
+            if(sectorId === 'stats' && !['Admin', 'CEO', 'Finance'].includes(currentUser.role)) return alert("Access Violation: Active profile lacks sufficient corporate credentials.");
+
+            document.querySelectorAll('.sector').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-links li').forEach(l => l.classList.remove('active'));
+            document.getElementById('sector-' + sectorId).classList.add('active');
+            document.getElementById('nav-' + sectorId).classList.add('active');
+        }
+
+        function initAllData() {
+            renderHome(); renderInventory(); renderPOSCatalog(); renderRequisitions(); renderLogistics();
+            renderProcurement(); renderHR(); renderFinance(); renderAccounts(); renderAnnouncements(); recalculateLiveMetricsAndCharts();
+        }
+
+        function calculateQuickMargin() {
+            let cost = parseFloat(document.getElementById('util-cost').value) || 0;
+            let retail = parseFloat(document.getElementById('util-retail').value) || 0;
+            let margin = retail - cost;
+            document.getElementById('util-margin-res').innerText = "Ksh " + margin.toFixed(2) + " (" + (retail > 0 ? ((margin/retail)*100).toFixed(1) : 0) + "%)";
+        }
+
+        /* ==========================================
+           HOME & INVENTORY SECTORS
+           ========================================== */
+        function renderHome() {
+            document.getElementById('stat-user-count').innerText = users.length;
+            let tbody = document.getElementById('user-approval-table'); tbody.innerHTML = '';
+            users.forEach(u => {
+                let statusColor = u.status === 'Approved' ? 'color: var(--success)' : (u.status === 'Denied' ? 'color: var(--danger)' : 'color: var(--warning)');
+                let approvalActions = u.status === 'Pending' ? 
+                    `<button class="btn btn-success" style="padding: 4px 8px; font-size:11px;" onclick="changeUserStatus(${u.id}, 'Approved')">Approve</button>
+                     <button class="btn btn-danger" style="padding: 4px 8px; font-size:11px; margin-left:4px;" onclick="changeUserStatus(${u.id}, 'Denied')">Deny</button>` : 
+                    `<span style="font-size: 11px; color: #94a3b8; font-weight:600;">Authorized</span>`;
+                let deletionAction = (u.id !== 1 && u.id !== 2) ? `<button class="btn btn-danger" style="padding: 4px 8px; font-size:11px; margin-left:8px;" onclick="purgeUserProfile(${u.id})">Del</button>` : '';
+                tbody.innerHTML += `<tr><td><strong>${u.name}</strong></td><td>${u.role}</td><td style="font-weight:bold; ${statusColor}">${u.status}</td><td>${approvalActions} ${deletionAction}</td></tr>`;
+            });
+        }
+        function changeUserStatus(id, newStatus) { let u = users.find(x => x.id === id); if(u) { u.status = newStatus; saveData(); renderHome(); } }
+        function purgeUserProfile(id) {
+            if(currentUser.id === id) return;
+            if(confirm("Confirm user account purge?")) { users = users.filter(x => x.id !== id); saveData(); renderHome(); }
+        }
+
+        function renderInventory() {
+            let tbody = document.getElementById('inventory-table'); tbody.innerHTML = '';
+            let exhibitsProfitMargin = ['CEO', 'Finance', 'Admin'].includes(currentUser.role);
+            document.getElementById('th-inventory-margin').style.display = exhibitsProfitMargin ? '' : 'none';
+
+            inventory.forEach(item => {
+                let margin = item.retail - item.wholesale;
+                let controlsHtml = (currentUser.role === 'Admin' || currentUser.role === 'CEO' || currentUser.role === 'Store Manager') ? 
+                    `<td><button class="btn btn-warning" style="padding: 4px 8px; font-size:11px;" onclick="modifyInventoryPrompt(${item.id})">Adjust</button>
+                     <button class="btn btn-danger" style="padding: 4px 8px; font-size:11px; margin-left:4px;" onclick="purgeInventoryItem(${item.id})">Del</button></td>` : 
+                    `<td><span style="font-size:11px; color:#94a3b8;">Read-Only</span></td>`;
+                
+                tbody.innerHTML += `<tr><td><strong>${item.name}</strong></td><td style="font-weight: 600;">${item.qty} Pcs</td><td>Ksh ${item.wholesale.toFixed(2)}</td><td><strong style="color:var(--accent);">Ksh ${item.retail.toFixed(2)}</strong></td>
+                    <td style="color:var(--success); font-weight:bold; display: ${exhibitsProfitMargin ? '' : 'none'};">+ Ksh ${margin.toFixed(2)}</td>${controlsHtml}</tr>`;
+            });
+        }
+        function addNewInventoryItem() {
+            let name = document.getElementById('inv-new-name').value.trim().toUpperCase(), qty = parseInt(document.getElementById('inv-new-qty').value), wholesale = parseFloat(document.getElementById('inv-new-wholesale').value), retail = parseFloat(document.getElementById('inv-new-retail').value);
+            if(!name || isNaN(qty) || isNaN(wholesale) || isNaN(retail)) return alert("Validation Input Failure");
+            inventory.push({ id: Date.now(), name: name, qty: qty, wholesale: wholesale, retail: retail });
+            saveData(); initAllData(); document.querySelectorAll('#sector-inventory input').forEach(el => el.value = '');
+        }
+        function modifyInventoryPrompt(id) {
+            let item = inventory.find(i => i.id === id);
+            let nQty = prompt("Adjust Stock Balance:", item.qty), nWholesale = prompt("Adjust Wholesale Matrix (Ksh):", item.wholesale), nRetail = prompt("Adjust Retail Base (Ksh):", item.retail);
+            if(nQty !== null && !isNaN(parseInt(nQty))) item.qty = parseInt(nQty);
+            if(nWholesale !== null && !isNaN(parseFloat(nWholesale))) item.wholesale = parseFloat(nWholesale);
+            if(nRetail !== null && !isNaN(parseFloat(nRetail))) item.retail = parseFloat(nRetail);
+            saveData(); initAllData();
+        }
+        function purgeInventoryItem(id) { if(confirm("Permanent deletion?")) { inventory = inventory.filter(i => i.id !== id); saveData(); initAllData(); } }
+
+        /* ==========================================
+           POS & SALE PRINTING ENGINE
+           ========================================== */
+        function renderPOSCatalog() {
+            let tbody = document.getElementById('pos-catalog'); tbody.innerHTML = '';
+            inventory.forEach(item => {
+                let badgeClass = item.qty > 10 ? 'background:#dcfce7; color:#166534;' : 'background:#fee2e2; color:#991b1b;';
+                tbody.innerHTML += `<tr><td><strong>${item.name}</strong></td><td><span class="badge" style="${badgeClass}">${item.qty}</span></td><td>Ksh ${item.retail.toFixed(2)}</td><td><button class="btn btn-primary" style="padding: 4px 10px; font-size:12px;" onclick="stageIntoCart(${item.id})">Select</button></td></tr>`;
+            });
+        }
+        function filterPOS() {
+            let filter = document.getElementById('pos-search').value.toUpperCase(), rows = document.getElementById('pos-catalog').getElementsByTagName('tr');
+            for (let row of rows) row.style.display = row.cells[0].innerText.toUpperCase().indexOf(filter) > -1 ? "" : "none";
+        }
+        function stageIntoCart(id) {
+            let item = inventory.find(i => i.id === id);
+            let sellPrice = prompt(`Establish Selling Cost for ${item.name} (Suggested: Ksh ${item.retail}):`, item.retail);
+            if(sellPrice === null || isNaN(parseFloat(sellPrice))) return; 
+            let sellQty = prompt(`Establish Ticket Units Count (Max Pool: ${item.qty}):`, 1);
+            if(sellQty === null || parseInt(sellQty) > item.qty || parseInt(sellQty) <= 0 || isNaN(parseInt(sellQty))) return alert("Inventory Limits Exceeded.");
+            
+            currentCart.push({ id: item.id, name: item.name, price: parseFloat(sellPrice), wholesale: item.wholesale, qty: parseInt(sellQty), total: parseFloat(sellPrice) * parseInt(sellQty) });
+            updateCartUI();
+        }
+        function updateCartUI() {
+            let cartDiv = document.getElementById('pos-cart'); cartDiv.innerHTML = ''; let calc = 0;
+            if(currentCart.length === 0) cartDiv.innerHTML = `<p style="text-align: center; color: #94a3b8; font-size:12px; margin-top:20px;">No items staged in ticket</p>`;
+            currentCart.forEach((item, idx) => {
+                calc += item.total;
+                cartDiv.innerHTML += `<div class="cart-item"><div><strong>${item.name}</strong><br><span style="font-size: 12px; color: var(--secondary);">${item.qty} Pcs @ Ksh ${item.price.toFixed(2)}</span></div>
+                    <div style="text-align: right;"><strong>Ksh ${item.total.toFixed(2)}</strong><br><span style="color: var(--warning); cursor: pointer; font-size: 11px; margin-right:8px;" onclick="dropCartItem(${idx})">Remove</span></div></div>`;
+            });
+            document.getElementById('pos-total').innerText = calc.toFixed(2);
+        }
+        function dropCartItem(index) { currentCart.splice(index, 1); updateCartUI(); }
+
+        function executeSale() {
+            if(currentCart.length === 0) return alert("System Operation Blocked: Action requires staging items.");
+            
+            let clientRef = document.getElementById('pos-customer').value || "General Counter Walk-In";
+            let accountingSum = parseFloat(document.getElementById('pos-total').innerText);
+            let codeGeneration = "BSH-" + Math.floor(Math.random() * 90000 + 10000);
+            let isoDate = new Date().toISOString();
+
+            // GENERATE RECEIPT HTML
+            let printHTML = `
+                <div class="receipt-mode">
+                    <h3>FLIGHTING HARDWARE</h3>
+                    <p>Receipt ID: ${codeGeneration}<br>Client: ${clientRef}<br>Date: ${new Date().toLocaleString()}</p>
+                    <table>
+                        <tr><th>Description</th><th>Qty</th><th>Subtotal</th></tr>`;
+            
+            currentCart.forEach(c => {
+                let originalStockItem = inventory.find(i => i.id === c.id);
+                if(originalStockItem) originalStockItem.qty -= c.qty;
+                salesHistory.push({ ...c, date: isoDate, receiptRef: codeGeneration });
+                printHTML += `<tr><td>${c.name}</td><td>${c.qty}</td><td>${c.total.toFixed(2)}</td></tr>`;
+            });
+
+            printHTML += `</table>
+                    <div class="totals">Total Due: Ksh ${accountingSum.toFixed(2)}</div>
+                    <div class="caution">Thank you for shopping with us!<br>Together We Rise</div>
+                </div>`;
+
+            finances.push({ 
+                id: Date.now(), date: isoDate.split('T')[0], type: "Payment", entity: clientRef, 
+                reason: `Counter POS checkout ticket ${codeGeneration}`, evidence: `Auto POS`,
+                imageFile: "", amount: accountingSum, mode: "POS Clearing Terminal", status: "Cleared" 
+            });
+
+            saveData(); currentCart = []; document.getElementById('pos-customer').value = '';
+            updateCartUI(); initAllData();
+            
+            // Execute physical print
+            document.getElementById('print-area').innerHTML = printHTML;
+            window.print();
+        }
+
+        /* ==========================================
+           REQUISITIONS, LOGISTICS, TRANSFER, PROCUREMENT
+           ========================================== */
+        function renderRequisitions() {
+            let tbody = document.getElementById('req-table'); tbody.innerHTML = '';
+            requisitions.forEach(r => {
+                let canApprove = ['CEO', 'Finance'].includes(currentUser.role);
+                let btnHtml = canApprove ? `<button class="btn btn-warning" style="padding: 4px 8px; font-size:11px;" onclick="adjustRequisitionPrompt(${r.id})">Review</button>` : `<span style="font-size:11px; color:#94a3b8;">Restricted (CEO/Finance Only)</span>`;
+                let badgeBg = r.status.includes('Pending') ? '#fef3c7' : (r.status.includes('Approved') ? '#dcfce7' : '#fee2e2');
+                tbody.innerHTML += `<tr><td><strong>${r.user}</strong></td><td>${r.item}</td><td>Ksh ${r.cost.toFixed(2)}</td><td style="font-size:12px;">${r.reason}</td><td><span class="badge" style="background:${badgeBg};">${r.status}</span></td><td>${btnHtml}</td></tr>`;
+            });
+        }
+        function addReq() {
+            let i = document.getElementById('req-item').value.trim(), c = document.getElementById('req-cost').value, r = document.getElementById('req-reason').value.trim();
+            if(!i || !c || !r) return alert("Validation Failure");
+            requisitions.push({ id: Date.now(), user: currentUser.name, item: i, cost: parseFloat(c), reason: r, status: "Pending Approval" });
+            saveData(); document.getElementById('req-item').value = ''; document.getElementById('req-cost').value = ''; document.getElementById('req-reason').value = ''; renderRequisitions();
+        }
+        function adjustRequisitionPrompt(id) {
+            let r = requisitions.find(x => x.id === id);
+            r.status = prompt("Transition status (Pending Approval / Approved / Denied):", r.status) || r.status;
+            saveData(); renderRequisitions();
+        }
+
+        function renderLogistics() {
+            let tbody = document.getElementById('logistics-table'); tbody.innerHTML = '';
+            logistics.forEach(l => {
+                tbody.innerHTML += `<tr><td><strong>${l.driver}</strong></td><td><span style="font-family:monospace; font-weight:bold;">${l.vehicle}</span></td><td><span class="badge" style="background:#e0f2fe; color:#0369a1;">${l.status}</span></td><td style="color: var(--danger); font-weight:600;">Ksh ${l.expenses.toFixed(2)}</td><td style="font-size:12px;">${l.agenda}</td><td><button class="btn btn-warning" style="padding: 4px 8px; font-size:11px;" onclick="alterFleetLogisticsPrompt(${l.id})">Update</button></td></tr>`;
+            });
+        }
+        function addDriverPrompt() {
+            let d = prompt("Enter Driver Name:"); let v = prompt("Enter Vehicle Reg Number:");
+            if(d && v) { logistics.push({ id: Date.now(), driver: d, vehicle: v.toUpperCase(), status: "Standby", expenses: 0, agenda: "Awaiting route assignment." }); saveData(); renderLogistics(); }
+        }
+        function alterFleetLogisticsPrompt(id) {
+            let u = logistics.find(x => x.id === id);
+            u.status = prompt("Status:", u.status) || u.status; u.expenses = parseFloat(prompt("Expenses:", u.expenses)) || u.expenses; u.agenda = prompt("Agenda:", u.agenda) || u.agenda;
+            saveData(); renderLogistics();
+        }
+
+        function renderProcurement() {
+            let tbody = document.getElementById('procurement-table'); tbody.innerHTML = '';
+            procurementOrders.forEach(p => {
+                tbody.innerHTML += `<tr><td><strong>${p.vendor}</strong></td><td>${p.item}</td><td>Ksh ${p.cost.toLocaleString()}</td><td><span class="badge" style="background:#fae8ff; color:#701a75;">${p.status}</span></td><td><button class="btn btn-danger" style="padding: 3px 6px; font-size:11px;" onclick="cancelProcurement(${p.id})">Drop</button></td></tr>`;
+            });
+        }
+        function addProcurementOrder() {
+            let vendor = document.getElementById('pro-vendor').value.trim(), item = document.getElementById('pro-item').value.trim(), cost = parseFloat(document.getElementById('pro-cost').value) || 0, status = document.getElementById('pro-status').value;
+            if(!vendor || !item || cost <= 0) return alert("Validation Error");
+            procurementOrders.push({ id: Date.now(), vendor: vendor, item: item, cost: cost, status: status });
+            
+            // Automatically log as Account Payable if not delivered
+            if (!status.includes("Delivered")) { manualAccounts.accountsPayable += cost; }
+            if (status.includes("Delivered")) {
+                finances.push({ id: Date.now(), date: new Date().toISOString().split('T')[0], type: "Expense", entity: vendor, reason: `Procured Settlement: ${item}`, evidence: "B2B Sync", imageFile: "", amount: cost, mode: "Bank Wire", status: "Cleared" });
+            }
+            saveData(); initAllData();
+        }
+        function cancelProcurement(id) { if(confirm("Drop Order?")) { procurementOrders = procurementOrders.filter(x => x.id !== id); saveData(); initAllData(); } }
+
+        /* ==========================================
+           FINANCE, MASTER BOOKS & BALANCE SHEET
+           ========================================== */
+        
+        function submitCategorizedFinanceEntry() {
+            let type = document.getElementById('fin-type').value, entity = document.getElementById('fin-entity').value.trim(), reason = document.getElementById('fin-reason').value.trim(), amount = parseFloat(document.getElementById('fin-amount').value), mode = document.getElementById('fin-mode').value;
+            if(!entity || !reason || isNaN(amount) || amount <= 0) return alert("Validation Input Error");
+
+            finances.push({ id: Date.now(), date: new Date().toISOString().split('T')[0], type: type, entity: entity, reason: reason, evidence: "MANUAL", imageFile: "", amount: amount, mode: mode, status: "Reconciled Entry" });
+            saveData(); initAllData(); alert("Ledger Node Entry Success");
+        }
+
+        // Logic for specific date filtering
+        function isDateInPeriod(dateStr, period) {
+            if(period === 'all') return true;
+            let d = new Date(dateStr); let now = new Date();
+            if(period === 'daily') return d.toDateString() === now.toDateString();
+            if(period === 'weekly') {
+                let diffTime = Math.abs(now - d);
+                let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+                return diffDays <= 7;
+            }
+            if(period === 'monthly') return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+            if(period === 'yearly') return d.getFullYear() === now.getFullYear();
+            return true;
+        }
+
+        function renderFinance() {
+            let tbody = document.getElementById('finance-table'); tbody.innerHTML = '';
+            let period = document.getElementById('fin-filter-period').value;
+            
+            let sumPay = 0; let sumExp = 0; let sumDebt = 0;
+
+            finances.forEach(f => {
+                if(isDateInPeriod(f.date, period)) {
+                    if(f.type.includes('Payment')) sumPay += f.amount;
+                    if(f.type.includes('Expense')) sumExp += f.amount;
+                    if(f.type.includes('Debt')) sumDebt += f.amount;
+
+                    let directionalColor = f.type.includes('Payment') ? 'var(--success)' : (f.type.includes('Expense') ? 'var(--danger)' : 'var(--warning)');
+                    tbody.innerHTML += `<tr><td><span style="font-family:monospace;">${f.date}</span></td><td><strong style="color:${directionalColor}">${f.type}</strong></td><td><strong>${f.entity}</strong></td><td style="font-size:12px;">${f.reason}</td><td style="font-weight:bold;">Ksh ${f.amount.toFixed(2)}</td><td><span style="font-size:12px;">${f.mode}</span></td><td><span class="badge" style="background:#f1f5f9;">${f.status}</span></td><td><button class="btn btn-warning" style="padding: 4px 8px; font-size:11px;" onclick="alterFinanceRecord(${f.id})">Update</button></td></tr>`;
+                }
+            });
+
+            document.getElementById('fin-sum-pay').innerText = "Ksh " + sumPay.toLocaleString();
+            document.getElementById('fin-sum-exp').innerText = "Ksh " + sumExp.toLocaleString();
+            document.getElementById('fin-sum-debt').innerText = "Ksh " + sumDebt.toLocaleString();
+        }
+        function alterFinanceRecord(id) { let d = finances.find(x => x.id === id); d.amount = parseFloat(prompt("Correct Balance:", d.amount)) || d.amount; saveData(); initAllData(); }
+
+        // EDIT MASTER ACCOUNTS
+        function editMasterAccountsPrompt() {
+            if(!['CEO', 'Finance'].includes(currentUser.role)) return alert("Unauthorized Exec Command");
+            let newCap = prompt("Enter Corporate Owner Equity Capital (Ksh):", manualAccounts.capital);
+            let newDebt = prompt("Enter Verified Long Term Loan Liabilities (Ksh):", manualAccounts.longTermDebt);
+            let newAP = prompt("Enter Accounts Payable [Vendors/Suppliers] (Ksh):", manualAccounts.accountsPayable);
+            let newHR = prompt("Enter Pending HR & Works Payments (Ksh):", manualAccounts.hrWorks);
+            let newCash = prompt("Enter AUDITED Physical Cash & Bank Balance (Ksh):", manualAccounts.cashBank);
+            
+            if(newCap && !isNaN(parseFloat(newCap))) manualAccounts.capital = parseFloat(newCap);
+            if(newDebt && !isNaN(parseFloat(newDebt))) manualAccounts.longTermDebt = parseFloat(newDebt);
+            if(newAP && !isNaN(parseFloat(newAP))) manualAccounts.accountsPayable = parseFloat(newAP);
+            if(newHR && !isNaN(parseFloat(newHR))) manualAccounts.hrWorks = parseFloat(newHR);
+            if(newCash && !isNaN(parseFloat(newCash))) manualAccounts.cashBank = parseFloat(newCash);
+            
+            saveData(); initAllData();
+        }
+
+        function renderAccounts() {
+            let pureExpenses = 0; let pureOtherIncome = 0;
+            
+            finances.forEach(f => {
+                if (f.type.includes("Payment")) pureOtherIncome += f.amount;
+                if (f.type.includes("Expense")) pureExpenses += f.amount;
+            });
+
+            let salesRev = 0; let salesCOGS = 0;
+            salesHistory.forEach(s => { salesRev += s.total; salesCOGS += (s.wholesale * s.qty); });
+
+            // Avoid double counting POS sales inside pureOtherIncome if they are logged
+            pureOtherIncome = Math.max(0, pureOtherIncome - salesRev); 
+
+            let totalIncome = salesRev + pureOtherIncome;
+            let totalExpenses = salesCOGS + pureExpenses;
+            let netIncome = totalIncome - totalExpenses; // Profit
+
+            // Update P&L Form
+            document.getElementById('bs-rev-sales').innerText = salesRev.toLocaleString();
+            document.getElementById('bs-rev-other').innerText = pureOtherIncome.toLocaleString();
+            document.getElementById('bs-rev-total').innerText = totalIncome.toLocaleString();
+            document.getElementById('bs-exp-cogs').innerText = salesCOGS.toLocaleString();
+            document.getElementById('bs-exp-op').innerText = pureExpenses.toLocaleString();
+            document.getElementById('bs-exp-total').innerText = totalExpenses.toLocaleString();
+            document.getElementById('bs-net-income').innerText = "Ksh " + netIncome.toLocaleString(undefined, {minimumFractionDigits:2});
+
+            // Master Balance Sheet Data
+            let currentInvValue = 0;
+            inventory.forEach(i => { currentInvValue += (i.qty * i.wholesale); });
+            
+            // Adding HR payments implicitly logged to Expenses? Let's just use manual variables for balance.
+            let totalAssets = manualAccounts.cashBank + currentInvValue;
+            let totalLiabilitiesEquity = manualAccounts.accountsPayable + manualAccounts.hrWorks + manualAccounts.longTermDebt + manualAccounts.capital + netIncome;
+
+            document.getElementById('bs-ast-cash').innerText = manualAccounts.cashBank.toLocaleString();
+            document.getElementById('bs-ast-inv').innerText = currentInvValue.toLocaleString();
+            document.getElementById('bs-ast-total').innerText = totalAssets.toLocaleString();
+
+            document.getElementById('bs-lia-ap').innerText = manualAccounts.accountsPayable.toLocaleString();
+            document.getElementById('bs-lia-hr').innerText = manualAccounts.hrWorks.toLocaleString();
+            document.getElementById('bs-lia-loans').innerText = manualAccounts.longTermDebt.toLocaleString();
+            document.getElementById('bs-equ-cap').innerText = manualAccounts.capital.toLocaleString();
+            document.getElementById('bs-equ-ret').innerText = netIncome.toLocaleString();
+            document.getElementById('bs-lia-total').innerText = totalLiabilitiesEquity.toLocaleString();
+
+            // Auto-Balance Diagnostic Engine
+            let balanceDiff = totalAssets - totalLiabilitiesEquity;
+            let diagnosticDiv = document.getElementById('balance-diagnostic');
+            
+            if (Math.abs(balanceDiff) <= 10) {
+                diagnosticDiv.className = "balance-alert ok";
+                diagnosticDiv.innerText = "✅ Balance Sheet is Reconciled and Stable. (Assets = Liabilities + Equity)";
+            } else if (balanceDiff > 0) {
+                diagnosticDiv.className = "balance-alert error";
+                diagnosticDiv.innerText = `⚠️ Asset Surplus Detected: Ksh ${balanceDiff.toLocaleString()}. \nSolution Challenge: Audit unrecorded Owner Equity injections, unlogged long-term debt, or pending accounts payable that haven't been captured.`;
+            } else {
+                diagnosticDiv.className = "balance-alert error";
+                diagnosticDiv.innerText = `⚠️ Asset Deficit (Unbalanced) Detected: Ksh ${Math.abs(balanceDiff).toLocaleString()}. \nSolution Challenge: Audit unrecorded operational/HR expenses, identify missing cash/cash leaks, or verify unrecorded asset purchases.`;
+            }
+        }
+
+        /* ==========================================
+           ADVANCED ANALYTICS & STATS DASHBOARD
+           ========================================== */
+        function recalculateLiveMetricsAndCharts() {
+            let grossRevenueSum = 0; let totalExpensesSum = 0;
+            finances.forEach(f => {
+                if (f.type.includes("Payment")) grossRevenueSum += f.amount;
+                else if (f.type === "Expense") totalExpensesSum += f.amount;
+            });
+            let netYield = grossRevenueSum - totalExpensesSum;
+
+            let invValueTotal = 0;
+            inventory.forEach(i => { invValueTotal += (i.qty * i.wholesale); });
+
+            let itemMetrics = {}; let totalUnitsMoved = 0; 
+            salesHistory.forEach(s => {
+                if(!itemMetrics[s.name]) itemMetrics[s.name] = { revenue: 0, qty: 0 };
+                itemMetrics[s.name].revenue += s.total;
+                itemMetrics[s.name].qty += s.qty;
+                totalUnitsMoved += s.qty;
+            });
+
+            let topItem = "None Logged Yet"; let topRev = 0;
+            for(const [name, metrics] of Object.entries(itemMetrics)) {
+                if(metrics.revenue > topRev) { topRev = metrics.revenue; topItem = `${name} (${metrics.qty} Pcs)`; }
+            }
+
+            document.getElementById('an-gross').innerText = "Ksh " + grossRevenueSum.toLocaleString();
+            document.getElementById('an-expenses').innerText = "- Ksh " + totalExpensesSum.toLocaleString();
+            document.getElementById('an-inv-val').innerText = "Ksh " + invValueTotal.toLocaleString();
+            document.getElementById('an-net').innerText = "Ksh " + netYield.toLocaleString();
+            document.getElementById('an-top-item').innerText = topItem;
+            document.getElementById('an-unit-volume').innerText = totalUnitsMoved.toLocaleString() + " Units";
+
+            // Update Dynamic Pie Chart (CSS Conic Gradient)
+            let pureTotal = grossRevenueSum + totalExpensesSum;
+            if(pureTotal > 0) {
+                let revPerc = (grossRevenueSum / pureTotal) * 100;
+                let pieEl = document.getElementById('stat-pie-chart');
+                pieEl.style.background = `conic-gradient(#2563eb 0% ${revPerc}%, #dc2626 ${revPerc}% 100%)`;
+            }
+
+            // High Fidelity Bar Chart
+            let container = document.getElementById('dynamic-bar-chart');
+            if(!container) return;
+            container.innerHTML = `<div class="chart-grid-line" style="top: 25%;"></div><div class="chart-grid-line" style="top: 50%;"></div><div class="chart-grid-line" style="top: 75%;"></div>`;
+            analyticChartData[2].amount = grossRevenueSum; // Overriding May-Jun for visual flair
+            let absoluteMaximumValue = Math.max(...analyticChartData.map(b => b.amount), 2000000); 
+
+            analyticChartData.forEach(barNode => {
+                let scaledPercentage = (barNode.amount / absoluteMaximumValue) * 100;
+                container.innerHTML += `<div class="bar-wrapper"><div class="bar-tooltip">Ksh ${barNode.amount.toLocaleString()}</div><div class="bar" style="height: ${scaledPercentage}%; background: ${barNode.color};"></div><div class="bar-label">${barNode.tag}</div></div>`;
+            });
+        }
+
+        /* ==========================================
+           HR, ANNOUNCEMENTS & LOGISTICS EXPORTS
+           ========================================== */
+        function renderHR() {
+            let tbody = document.getElementById('hr-table'); if(!tbody) return; tbody.innerHTML = '';
+            hrData.forEach(h => {
+                let manipulationBtn = ['Admin', 'CEO', 'HR'].includes(currentUser.role) ? `<button class="btn btn-warning" style="padding: 4px 8px; font-size:11px;" onclick="alterEmployeeFilePrompt(${h.id})">Edit</button>` : `<span style="font-size: 11px;">Protected</span>`;
+                tbody.innerHTML += `<tr><td><strong>${h.name}</strong></td><td><span>${h.role}</span></td><td><span class="badge" style="background: #dcfce7; color: #166534;">${h.status}</span></td><td style="font-weight:bold; color:var(--primary);">Ksh ${h.salary.toLocaleString()}</td><td style="font-size:12px;">${h.cases}</td><td>${manipulationBtn}</td></tr>`;
+            });
+        }
+        function alterEmployeeFilePrompt(id) { let f = hrData.find(x => x.id === id); f.salary = parseFloat(prompt("Salary:", f.salary)) || f.salary; f.status = prompt("Status:", f.status) || f.status; saveData(); renderHR(); }
+        function addEmployeePrompt() { let n = prompt("Name:"); let r = prompt("Role:"); let s = prompt("Salary (Ksh):"); if(n && r && s) { hrData.push({ id: Date.now(), name: n, role: r, status: "Active", salary: parseFloat(s), cases: "Clean record" }); manualAccounts.hrWorks += parseFloat(s); saveData(); renderHR(); } }
+
+        function renderAnnouncements() {
+            let displayContainer = document.getElementById('announcement-board'); displayContainer.innerHTML = '';
+            announcements.slice().reverse().forEach(postItem => {
+                let opBadge = postItem.type === 'Complaint' ? 'background:#fee2e2; color:var(--danger)' : (postItem.type === 'Suggestion' ? 'background:#fef3c7; color:var(--warning)' : 'background:#e0f2fe; color:var(--accent)');
+                displayContainer.innerHTML += `<div style="border-left: 4px solid var(--accent); padding: 15px; background: #f8fafc; border-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); border: 1px solid var(--border); border-left-width:4px;">
+                    <div style="display:flex; justify-content:space-between; margin-bottom:8px; align-items:center;"><div><strong style="color: var(--text); font-size:15px;">${postItem.user}</strong><span style="font-size:11px; color:#64748b; margin-left:6px; font-weight:600;">[${postItem.role}]</span></div><span style="font-size: 11px; ${opBadge}; padding: 3px 8px; border-radius: 10px; font-weight:bold; text-transform:uppercase;">${postItem.type}</span></div><p style="font-size: 14px; margin-bottom: 8px; color:#334155; line-height:1.5;">${postItem.text}</p><small style="color: #94a3b8; font-family:monospace;">Timestamp: ${postItem.time}</small></div>`;
+            });
+        }
+        function postAnnouncement() {
+            let cls = document.getElementById('ann-type').value, txt = document.getElementById('ann-text').value.trim();
+            if(!txt) return alert("System Content Notice: Broadcast requires content.");
+            announcements.push({ id: Date.now(), user: currentUser.name, role: currentUser.role, type: cls, text: txt, time: new Date().toLocaleString() });
+            saveData(); document.getElementById('ann-text').value = ''; renderAnnouncements();
+        }
+
+        function printTransfer() {
+            let items = document.getElementById('st-items').value.replace(/\n/g, "<br>");
+            let from = document.getElementById('st-from').value;
+            let to = document.getElementById('st-to').value;
+            let driver = document.getElementById('st-driver').value;
+
+            if(!items || !to || !driver) return alert("Waybill Validation Hold: Please declare items array, receiver, and driver.");
+
+            let printHTML = `
+                <div class="transfer-mode">
+                    <h2>FLIGHTING INTER-FACILITY LOGISTICS WAYBILL</h2>
+                    <div style="margin-bottom: 25px; font-size: 13px; line-height:1.6;">
+                        <strong>Dispatch Reference:</strong> TRN-VOUCHER-${Math.floor(Math.random() * 900000 + 100000)}<br>
+                        <strong>Timestamp:</strong> ${new Date().toLocaleString()}<br>
+                        <strong>Encryption:</strong> FLIGHTING-TRACKING-SECURE
+                    </div>
+                    <table style="width:100%; border-collapse:collapse;">
+                        <tr><th style="background:#f1f5f9; width: 35%;">Origin Node</th><td>${from}</td></tr>
+                        <tr><th style="background:#f1f5f9;">Target Destination</th><td>${to}</td></tr>
+                        <tr><th style="background:#f1f5f9;">Transit Custodian</th><td>${driver}</td></tr>
+                        <tr><th style="background:#f1f5f9; vertical-align: top;">Inventory Manifest</th><td style="font-weight:bold; font-family:monospace; line-height:1.5;">${items}</td></tr>
+                    </table>
+                    <div class="signatures"><div>Releasing Authority<br>_______________</div><div>Logistics Escort<br>_______________</div><div>Receiving Inspector<br>_______________</div></div>
+                </div>`;
+            document.getElementById('print-area').innerHTML = printHTML; window.print();
+        }
+    </script>
+</body>
+</html>
