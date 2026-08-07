@@ -8,29 +8,38 @@ app.secret_key = 'bluestream-secret-key-2026'  # Protects login sessions
 
 DB_PATH = './data/inventory.db'
 
-# 2. Database Initialization & Default Admin Creation
+# 2. Database Initialization & Safe Migration
 def init_db():
     os.makedirs(os.path.dirname(DB_PATH), exist_ok=True)
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
     
-    # Create Users Table with username support
+    # Create Base Users Table if it doesn't exist at all
     cursor.execute('''
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            email TEXT,
             password TEXT NOT NULL
         )
     ''')
     
+    # Safely add columns if they are missing from an older table version
+    try:
+        cursor.execute('ALTER TABLE users ADD COLUMN username TEXT UNIQUE')
+    except sqlite3.OperationalError:
+        pass  # Column already exists
+        
+    try:
+        cursor.execute('ALTER TABLE users ADD COLUMN email TEXT')
+    except sqlite3.OperationalError:
+        pass  # Column already exists
+
     # Insert a default admin user automatically if none exists
     cursor.execute('SELECT * FROM users WHERE username = ?', ('Nyambane',))
     if not cursor.fetchone():
         cursor.execute('''
-            INSERT INTO users (username, password) 
+            INSERT INTO users (username, email, password) 
             VALUES (?, ?, ?)
-        ''', ('Nyambane',  'admin123'))
+        ''', ('Nyambane', 'nyambane@bluestream.com', 'admin123'))
     
     # Create Items Table (Aligned with inventory API)
     cursor.execute('''
@@ -63,7 +72,7 @@ def dashboard():
 def signup():
     if request.is_json:
         data = request.get_json()
-        username = data.get('email')  # Fallback if form sends email as username
+        username = data.get('email')
         password = data.get('password')
     else:
         username = request.form.get('email')
@@ -92,7 +101,7 @@ def signup():
 def login_post():
     if request.is_json:
         data = request.get_json()
-        identifier = data.get('email')  # JavaScript might send username/email through 'email' key
+        identifier = data.get('email')
         password = data.get('password')
     else:
         identifier = request.form.get('email')
@@ -100,7 +109,6 @@ def login_post():
 
     conn = sqlite3.connect(DB_PATH)
     cursor = conn.cursor()
-    # Check against either username or email
     cursor.execute('SELECT * FROM users WHERE (username = ? OR email = ?) AND password = ?', (identifier, identifier, password))
     user = cursor.fetchone()
     conn.close()
