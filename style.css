@@ -17,6 +17,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 20px;
 }
 
 .login-container {
@@ -58,7 +59,9 @@ label {
 }
 
 input[type="email"],
-input[type="password"] {
+input[type="password"],
+input[type="text"],
+select {
     width: 100%;
     padding: 12px;
     border: 1px solid #ddd;
@@ -68,7 +71,9 @@ input[type="password"] {
 }
 
 input[type="email"]:focus,
-input[type="password"]:focus {
+input[type="password"]:focus,
+input[type="text"]:focus,
+select:focus {
     outline: none;
     border-color: #667eea;
     box-shadow: 0 0 5px rgba(102, 126, 234, 0.1);
@@ -138,6 +143,7 @@ input[type="password"]:focus {
 .container {
     display: flex;
     min-height: 100vh;
+    position: relative;
 }
 
 /* SIDEBAR */
@@ -150,6 +156,8 @@ input[type="password"]:focus {
     height: 100vh;
     overflow-y: auto;
     box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+    z-index: 100;
 }
 
 .sidebar-logo {
@@ -220,12 +228,14 @@ input[type="password"]:focus {
     justify-content: center;
     font-weight: 600;
     color: white;
+    flex-shrink: 0;
 }
 
 .user-details p {
     font-size: 12px;
     margin: 2px 0;
     color: rgba(255, 255, 255, 0.9);
+    word-break: break-all;
 }
 
 .logout-btn {
@@ -251,6 +261,7 @@ input[type="password"]:focus {
     flex: 1;
     padding: 30px;
     overflow-y: auto;
+    width: calc(100% - 280px);
 }
 
 .header {
@@ -262,6 +273,8 @@ input[type="password"]:focus {
     justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    flex-wrap: wrap;
+    gap: 15px;
 }
 
 .header h1 {
@@ -272,6 +285,7 @@ input[type="password"]:focus {
 .header-actions {
     display: flex;
     gap: 10px;
+    flex-wrap: wrap;
 }
 
 .btn {
@@ -301,6 +315,16 @@ input[type="password"]:focus {
 
 .btn-secondary:hover {
     background: #d5dbdb;
+}
+
+/* MOBILE MENU TOGGLE BUTTON (Hidden on Desktop) */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #2c3e50;
+    cursor: pointer;
 }
 
 /* FILTERS */
@@ -337,16 +361,26 @@ input[type="password"]:focus {
     padding: 8px;
     border: 1px solid #ddd;
     border-radius: 5px;
-/* --- PREMIUM DASHBOARD TABLE STYLING --- */
+}
+
+/* ============ PREMIUM DASHBOARD TABLE STYLING ============ */
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    background-color: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    margin-top: 20px;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 20px;
     background-color: #ffffff;
     font-family: sans-serif;
+    min-width: 600px;
 }
 
-/* This creates clean horizontal row lines and spaces your items perfectly */
 th, td {
     padding: 12px 16px;
     text-align: left;
@@ -355,7 +389,6 @@ th, td {
     color: #334155;
 }
 
-/* Make headers bold and distinct */
 th {
     background-color: #f8fafc;
     font-weight: 600;
@@ -365,7 +398,48 @@ th {
     letter-spacing: 0.5px;
 }
 
-/* Subtle highlight when hovering over an inventory line */
 tr:hover {
     background-color: #f1f5f9;
+}
+
+/* ============ RESPONSIVE MEDIA QUERIES ============ */
+
+/* Tablets and medium screens */
+@media (max-width: 1024px) {
+    .filter-row {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* Mobile phones and small tablets */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+        padding: 15px;
+    }
+
+    .mobile-menu-toggle {
+        display: block;
+    }
+
+    .filter-row {
+        grid-template-columns: 1fr;
+    }
+
+    .header h1 {
+        font-size: 22px;
+    }
+
+    .login-container {
+        padding: 20px;
+    }
 }
