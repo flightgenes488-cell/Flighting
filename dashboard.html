@@ -9,7 +9,6 @@
     <style>
         /* --- DYNAMIC EYE-FRIENDLY MULTI-THEME SLATE ARCHITECTURE --- */
         :root {
-            /* Default Dark Mode Theme */
             --primary: #0f172a;          
             --sidebar-bg: #070b14;       
             --bg: #090d16;               
@@ -39,7 +38,6 @@
             --table-head: #1a233a;
         }
 
-        /* Light Mode Overrides */
         [data-theme="light"] {
             --primary: #cbd5e1;          
             --sidebar-bg: #f8fafc;       
@@ -76,13 +74,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
         body { background-color: var(--bg); color: var(--text); display: flex; height: 100vh; overflow: hidden; transition: background-color 0.3s, color 0.3s; }
 
-        /* Custom Scrollbars */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: var(--bg); }
         ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
 
-        /* --- AUTHENTICATION & LOGIN GATEWAY SCREEN --- */
         #auth-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: var(--sky-gradient); z-index: 9999; display: flex;
@@ -99,7 +95,6 @@
         .auth-tab { flex: 1; padding: 10px; border: none; background: transparent; color: var(--text-muted); font-weight: 700; cursor: pointer; border-radius: 8px; transition: 0.2s; font-size: 13px; }
         .auth-tab.active { background: var(--accent); color: #fff; }
 
-        /* --- MODALS --- */
         .modal-overlay {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.8); z-index: 10000; align-items: center; justify-content: center;
@@ -109,22 +104,14 @@
             border: 2px solid var(--accent); max-height: 90vh; overflow-y: auto;
         }
 
-        /* --- LOGO IMPORT SECTOR --- */
         .logo-import-box {
-            border: 2px dashed var(--accent);
-            border-radius: 12px;
-            padding: 8px;
-            text-align: center;
-            cursor: pointer;
-            margin-bottom: 10px;
-            background: rgba(14, 165, 233, 0.05);
-            transition: all 0.2s;
-            max-width: 180px;
+            border: 2px dashed var(--accent); border-radius: 12px; padding: 8px;
+            text-align: center; cursor: pointer; margin-bottom: 10px;
+            background: rgba(14, 165, 233, 0.05); transition: all 0.2s; max-width: 180px;
         }
         .logo-import-box:hover { background: rgba(14, 165, 233, 0.15); }
         .logo-img-preview { max-width: 100%; max-height: 55px; object-fit: contain; }
 
-        /* --- LAYOUT: SIDEBAR & MAIN --- */
         #app-container { display: flex; width: 100%; height: 100%; position: relative; }
 
         .sidebar {
@@ -147,7 +134,6 @@
 
         .main-wrapper { flex-grow: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
 
-        /* --- TOP HEADER --- */
         .top-header {
             background: var(--card-bg); height: 70px; display: flex; justify-content: space-between; align-items: center;
             padding: 0 30px; border-bottom: 1px solid var(--border); z-index: 10;
@@ -155,6 +141,14 @@
         .header-left-cluster { display: flex; align-items: center; gap: 18px; }
         .sidebar-toggle-btn { background: var(--input-bg); border: 1px solid var(--border); color: #38bdf8; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 16px; transition: 0.2s; }
         .sidebar-toggle-btn:hover { background: var(--accent); color: #fff; }
+
+        /* Slidebar Toggle for CEO */
+        .switch { position: relative; display: inline-block; width: 42px; height: 22px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: var(--border); transition: .4s; border-radius: 22px; }
+        .slider:before { position: absolute; content: ""; height: 16px; width: 16px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #f59e0b; }
+        input:checked + .slider:before { transform: translateX(20px); }
 
         .top-links { display: flex; gap: 15px; font-size: 13px; font-weight: 600; color: var(--text-muted); }
         .top-links span { cursor: pointer; transition: 0.2s; padding: 6px 10px; border-radius: 6px; }
@@ -170,7 +164,6 @@
         .sector.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* --- UI COMPONENTS --- */
         .section-header { margin-bottom: 22px; display: flex; align-items: flex-end; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
         h2 { color: var(--text); font-size: 22px; font-weight: 800; letter-spacing: -0.5px; }
         p.subtitle { color: var(--text-muted); font-size: 13px; margin-top: 4px; }
@@ -184,14 +177,13 @@
         th { background: var(--table-head); font-weight: 700; color: var(--text-muted); font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; border-top: 1px solid var(--border); }
         tbody tr:hover { background: var(--table-hover); }
 
-        /* EXCEL STYLE SPREADSHEET TABLE */
         .excel-table-wrapper { overflow-x: auto; border: 1px solid var(--excel-grid); border-radius: 8px; background: var(--sidebar-bg); }
         .excel-table { width: 100%; border-collapse: collapse; font-family: 'Consolas', 'Courier New', monospace; font-size: 12.5px; }
         .excel-table th { background: #0f766e; color: #ffffff; text-transform: uppercase; padding: 10px 12px; font-weight: 700; border: 1px solid #115e59; }
-        .excel-table td { border: 1px solid var(--border); padding: 8px 12px; background: var(--card-bg); }
+        .excel-table td { border: 1px solid var(--border); padding: 8px 12px; background: var(--card-bg); outline: none; }
+        .excel-table td:focus { background: var(--table-hover); outline: 1px solid var(--accent); }
         .excel-table tr:nth-child(even) td { background: var(--bg); }
 
-        /* Forms & Inputs */
         input[type="text"], input[type="password"], input[type="number"], input[type="date"], select, textarea {
             width: 100%; padding: 11px 14px; border: 1px solid var(--border); border-radius: 10px; font-size: 13px; transition: 0.2s; background: var(--input-bg); color: var(--text);
         }
@@ -210,7 +202,6 @@
 
         .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; letter-spacing: 0.5px; display: inline-block; color: #fff; }
 
-        /* Dashboard Interactive Cards */
         .dash-metrics { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 18px; margin-bottom: 22px; }
         .dash-card { background: var(--card-bg); border-radius: 14px; padding: 22px; border: 1px solid var(--border); position: relative; transition: transform 0.2s; cursor: pointer; }
         .dash-card:hover { transform: translateY(-3px); border-color: var(--accent); box-shadow: 0 6px 15px rgba(14,165,233,0.2); }
@@ -219,22 +210,8 @@
         .dash-card-icon { position: absolute; top: 18px; right: 18px; width: 42px; height: 42px; background: var(--accent-light); color: var(--accent); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
         .trend-up { font-size: 12px; font-weight: 600; color: var(--success); margin-top: 8px; display: flex; align-items: center; gap: 4px; }
 
-        /* Slidebar Calculator Control */
-        .calc-slide-wrapper {
-            background: var(--card-inner); border: 1px solid var(--border); border-radius: 12px; padding: 12px;
-            margin-top: 10px; transition: all 0.3s ease-in-out;
-        }
-        .slide-control-container {
-            display: flex; align-items: center; justify-content: space-between; gap: 10px;
-            background: var(--input-bg); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border);
-        }
-
-        /* Digital Display */
-        .digital-display-board {
-            background: #000; border: 2px solid #0ea5e9; border-radius: 12px; padding: 20px; text-align: center; margin-bottom: 25px; box-shadow: 0 0 20px rgba(14, 165, 233, 0.2);
-            position: relative; overflow: hidden;
-        }
-        .digital-time { font-family: 'Courier New', Courier, monospace; font-size: 38px; color: #10b981; font-weight: 900; text-shadow: 0 0 15px rgba(16, 185, 129, 0.6); margin-bottom: 5px; }
+        .calc-slide-wrapper { background: var(--card-inner); border: 1px solid var(--border); border-radius: 12px; padding: 12px; margin-top: 10px; transition: all 0.3s ease-in-out; }
+        .slide-control-container { display: flex; align-items: center; justify-content: space-between; gap: 10px; background: var(--input-bg); padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); }
 
         .cat-val-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 15px; margin-bottom: 20px; }
         .cat-val-card { background: var(--bg); border: 1px solid var(--border); border-left: 4px solid var(--accent); padding: 16px; border-radius: 12px; }
@@ -280,14 +257,19 @@
         }
 
         #print-area { display: none; }
+        
+        /* EXACT RECEIPT PRINTING STYLES */
         @media print {
+            @page { margin: 0; }
             body * { visibility: hidden; }
+            #app-container, #auth-screen, .modal-overlay { display: none !important; }
+            
             #print-area, #print-area * { visibility: visible; }
-            #print-area { display: block; position: absolute; left: 0; top: 0; width: 100%; background: white; padding: 10px; color: black; }
-            .excel-print-table { width: 100%; border-collapse: collapse; font-size: 11px; margin-top: 10px; }
-            .excel-print-table th, .excel-print-table td { border: 1px solid #000; padding: 6px; color: black; text-align: left; }
-            .excel-print-table th { background: #eee !important; font-weight: bold; }
-            .print-header-title { text-align: center; margin-bottom: 20px; font-size: 18px; font-weight: bold; }
+            #print-area { 
+                display: block !important; position: absolute; left: 0; top: 0; width: 100%; 
+                background: white; padding: 15px; color: black; font-family: 'Courier New', Courier, monospace; 
+            }
+            .receipt-text { color: black; margin: 0; }
         }
     </style>
 </head>
@@ -329,15 +311,17 @@
                 <h2 style="color: #38bdf8;">🛡️ Executive CEO Staff Gateway</h2>
                 <button class="btn btn-danger" onclick="closeCeoModal()">Close</button>
             </div>
-            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">Only the Permanent CEO can approve or remove staff accounts from the system. Staff profiles created here enable secure login.</p>
+            <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 15px;">Only the Permanent CEO can approve or remove staff accounts.</p>
             <div class="flex-row" style="align-items: flex-end;">
                 <div class="form-group flex-col"><label>Staff Username / Full Name</label><input type="text" id="reg-user" placeholder="Staff Name"></div>
                 <div class="form-group flex-col"><label>Assigned Password</label><input type="text" id="reg-pass" value="@20werise" placeholder="Password"></div>
                 <div class="form-group flex-col"><label>Assigned Department / Role</label>
                     <select id="reg-role">
                         <option value="CEO">CEO / Executive (Root)</option>
-                        <option value="Finance Manager">Finance Manager (Accounts)</option>
-                        <option value="Store Manager">Store Manager (Inventory/Stock)</option>
+                        <option value="Finance Manager">Finance Manager</option>
+                        <option value="Account Manager">Account Manager</option>
+                        <option value="Accountant">Accountant</option>
+                        <option value="Store Manager">Store Manager</option>
                         <option value="Sales">Sales Agent (Counter)</option>
                         <option value="Procurement Manager">Procurement Manager (B2B)</option>
                         <option value="Logistics Manager">Logistics Manager (Fleet)</option>
@@ -353,7 +337,7 @@
         </div>
     </div>
 
-    <!-- METRIC BREAKDOWN MODAL FOR EXECUTIVE DASHBOARD TOGGLES -->
+    <!-- METRIC BREAKDOWN MODAL -->
     <div id="dash-detail-modal" class="modal-overlay">
         <div class="modal-content" style="max-width: 650px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 15px;">
@@ -365,10 +349,9 @@
     </div>
 
     <div id="app-container" style="display:none;">
-        <!-- SWIPEABLE / COLLAPSIBLE SIDEBAR -->
+        <!-- SIDEBAR -->
         <div class="sidebar" id="app-sidebar">
             <div class="brand-container">
-                <!-- LOGO IMPORT SECTOR -->
                 <div class="logo-import-box" onclick="triggerLogoUpload()" title="Click to Import/Update Logo">
                     <div id="sidebar-logo-display">
                         <svg width="35" height="35" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -384,9 +367,7 @@
 
                 <div class="brand-title">Blue Stream Plumbing and Electrical Solutions Limited</div>
                 <div class="brand-subtitle">Together We Rise</div>
-                <div class="brand-contacts">
-                    📞 0743551984<br>📞 0785848821
-                </div>
+                <div class="brand-contacts">📞 0743551984<br>📞 0785848821</div>
             </div>
 
             <ul class="nav-links">
@@ -412,7 +393,16 @@
                 <div class="header-left-cluster">
                     <button class="sidebar-toggle-btn" onclick="toggleSidebar()" title="Toggle Sidebar">☰</button>
                     <button class="sidebar-toggle-btn" onclick="toggleTheme()" title="Toggle Dark/Light Mode">🌓</button>
-                    <button id="btn-ceo-gateway" class="btn btn-warning" style="display:none; margin-left: 10px;" onclick="openCeoModal()">🛡️ CEO Staff Gateway</button>
+                    
+                    <!-- NEW CEO TOGGLE SLIDER -->
+                    <div id="ceo-gateway-container" style="display:none; align-items:center; gap:8px; margin-left:15px;">
+                        <span style="font-size:11px; font-weight:bold; color:var(--text-muted); text-transform: uppercase;">CEO Gateway</span>
+                        <label class="switch">
+                            <input type="checkbox" id="ceo-toggle-checkbox" onchange="toggleCeoGateway(this)">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+
                     <div class="top-links" id="header-quick-links">
                         <span onclick="nav('home')" class="qlink-home">Home</span>
                         <span onclick="nav('inventory')" class="qlink-inventory">Products</span>
@@ -431,7 +421,6 @@
 
             <!-- MAIN CONTENT AREA -->
             <div class="main-content">
-                <div id="global-stock-alerts"></div>
 
                 <!-- 1. HOME / DASHBOARD -->
                 <div id="sector-home" class="sector active">
@@ -446,7 +435,6 @@
                         <strong>Dashboard Automation AI:</strong> Tap/Click on any metric card below to toggle and display the detailed breakdown behind the figures.
                     </div>
 
-                    <!-- TOGGLABLE / CLICKABLE METRIC CARDS -->
                     <div class="dash-metrics">
                         <div class="dash-card" onclick="toggleDashDetail('rev')">
                             <div class="dash-card-icon">💰</div>
@@ -475,24 +463,15 @@
                     </div>
                 </div>
 
-                <!-- 2. INVENTORY (PRODUCTS) -->
+                <!-- 2. INVENTORY -->
                 <div id="sector-inventory" class="sector">
                     <div class="section-header">
                         <div>
                             <h2>Products &amp; Stock Inventory</h2>
-                            <p class="subtitle">Automated category realization, pricing algorithms, and physical stock count printouts</p>
-                        </div>
-                        <div style="display: flex; gap: 10px;">
-                            <button class="btn btn-cyan" onclick="toggleAIHelper('inventory')">🤖 AI Help</button>
-                            <button class="btn btn-warning" onclick="printPhysicalStockSheet()">🖨️ Print Stock Sheet</button>
+                            <p class="subtitle">Automated category realization, pricing algorithms, and physical stock count</p>
                         </div>
                     </div>
                     
-                    <div id="ai-help-inventory" class="ai-helper-box">
-                        <strong>Inventory AI:</strong> Category selection is automated based on keywords in the item description. You can also override it manually.
-                    </div>
-
-                    <!-- CATEGORY-WISE INVENTORY VALUATION BREAKDOWN -->
                     <div class="card" style="border-top: 3px solid var(--accent);">
                         <h3 style="font-size: 15px; color: #38bdf8; margin-bottom: 12px;">📊 Inventory Valuation by Category (Purchase Cost)</h3>
                         <div class="cat-val-grid" id="category-valuation-container"></div>
@@ -511,12 +490,12 @@
                     </div>
 
                     <div class="card store-only" style="border-left: 4px solid var(--success);">
-                        <h3 style="margin-bottom: 12px; color: var(--success);">➕ Provision New Product Stock (Auto-Category & Pricing Engine)</h3>
+                        <h3 style="margin-bottom: 12px; color: var(--success);">➕ Provision New Product Stock</h3>
                         <div class="flex-row">
                             <div class="form-group flex-col" style="flex:1.5"><label>Item Description</label>
-                                <input type="text" id="inv-new-name" placeholder="Type item description (e.g., PPR Pipe, Socket, Switch...)" oninput="handleItemDescriptionInput(this.value)">
+                                <input type="text" id="inv-new-name" placeholder="Type item description" oninput="handleItemDescriptionInput(this.value)">
                             </div>
-                            <div class="form-group flex-col"><label>Category (Automated &amp; Editable)</label>
+                            <div class="form-group flex-col"><label>Category</label>
                                 <select id="inv-new-category">
                                     <option value="Waste & Drainage">Waste & Drainage Pipes/Plugs</option>
                                     <option value="Electrical Fittings">Electrical & Trunking</option>
@@ -534,16 +513,6 @@
                             <div class="form-group flex-col"><label>Initial Stock Qty</label><input type="number" id="inv-new-qty" placeholder="0"></div>
                             <div class="form-group flex-col"><label>Wholesale (Purchase Ksh)</label><input type="number" id="inv-new-wholesale" placeholder="0.00" oninput="calculateLiveMargin()"></div>
                             <div class="form-group flex-col"><label>Retail Price (Ksh)</label><input type="number" id="inv-new-retail" placeholder="0.00" oninput="calculateLiveMargin()"></div>
-                        </div>
-                        <div style="background: var(--bg); padding: 12px; border-radius: 8px; margin-top: 10px; margin-bottom: 15px; border: 1px dashed var(--accent); display:flex; justify-content:space-between; align-items:center;">
-                            <div>
-                                <span style="font-size: 12px; font-weight:bold; color:var(--accent);">🤖 AI Pricing Algorithm:</span>
-                                <div id="ai-pricing-suggestion" style="font-size: 13px; color: var(--success); font-weight: bold; margin-top: 2px;">Enter wholesale cost to trigger pricing suggestion.</div>
-                            </div>
-                            <button class="btn btn-primary" style="padding:6px 12px; font-size:11px;" onclick="applyAiSuggestion()">Apply Suggested Price</button>
-                        </div>
-                        <div style="margin-bottom: 15px; font-size: 13px; font-weight: bold; color: var(--accent);">
-                            Live Margin Calculation: <span id="live-margin-display" style="color: var(--success);">0% (Ksh 0.00 Profit)</span>
                         </div>
                         <button class="btn btn-success" onclick="addNewInventoryItem()">Commit Item to Catalog</button>
                     </div>
@@ -577,7 +546,6 @@
                             <h2>Sales &amp; POS Terminal</h2>
                             <p class="subtitle">Blue Stream Plumbing and Electrical Sales Register</p>
                         </div>
-                        <button class="btn btn-cyan" onclick="toggleAIHelper('sales')">🤖 AI Help</button>
                     </div>
 
                     <div class="delivery-tabs">
@@ -585,7 +553,6 @@
                         <button class="delivery-tab-btn" onclick="switchSalesRoom('archive')" id="stab-archive">🧾 Invoice Archive & Returns</button>
                     </div>
 
-                    <!-- ACTIVE POS TERMINAL -->
                     <div id="sroom-pos" class="pos-grid">
                         <div class="card">
                             <h3 style="color:#38bdf8;">Catalog Lookup</h3>
@@ -632,11 +599,9 @@
                             </button>
                         </div>
 
-                        <!-- Quick Calculator with Slide Bar Drawer -->
+                        <!-- Quick Calculator -->
                         <div class="card" style="border: 1px solid var(--border); display: flex; flex-direction: column;">
                             <h3 style="color: #f59e0b; margin-bottom: 8px;">🧮 Counter Calculator</h3>
-                            
-                            <!-- SLIDE BAR CONTROL -->
                             <div class="slide-control-container">
                                 <span style="font-size:12px; font-weight:bold; color:var(--text-muted);">Slide to Reveal Calculator:</span>
                                 <input type="range" id="calc-drawer-slidebar" min="0" max="100" value="0" style="width:110px; cursor:pointer;" oninput="handleCalcDrawerSlide(this.value)">
@@ -645,7 +610,6 @@
 
                             <div id="pos-calculator-container" class="calc-slide-wrapper" style="display:none; opacity: 0;">
                                 <input type="text" id="calc-display" style="font-size:20px; text-align:right; margin-bottom:10px; padding: 10px; border-radius: 8px; background:var(--bg); border:1px solid var(--border); color:var(--text);" disabled>
-                                
                                 <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:6px;">
                                     <button class="btn btn-calc" onclick="calcPush('7')">7</button><button class="btn btn-calc" onclick="calcPush('8')">8</button><button class="btn btn-calc" onclick="calcPush('9')">9</button><button class="btn btn-warning" onclick="calcPush('/')">/</button>
                                     <button class="btn btn-calc" onclick="calcPush('4')">4</button><button class="btn btn-calc" onclick="calcPush('5')">5</button><button class="btn btn-calc" onclick="calcPush('6')">6</button><button class="btn btn-warning" onclick="calcPush('*')">*</button>
@@ -657,11 +621,10 @@
                         </div>
                     </div>
 
-                    <!-- INVOICE ARCHIVE & RETURNS -->
                     <div id="sroom-archive" class="card" style="display: none;">
                         <h3>Receipt Archive & Return Mechanisms</h3>
                         <table>
-                            <thead><tr><th>Receipt ID</th><th>Date & Time</th><th>Customer</th><th>Method</th><th>Total Paid (Ksh)</th><th>Status</th><th>Actions</th></tr></thead>
+                            <thead><tr><th>Receipt ID</th><th>Date & Time</th><th>Customer</th><th>Method</th><th>Total Paid (Ksh)</th></tr></thead>
                             <tbody id="invoice-archive-table"></tbody>
                         </table>
                     </div>
@@ -669,117 +632,36 @@
 
                 <!-- 4. OPERATIONS & ROUTES -->
                 <div id="sector-routes" class="sector">
-                    <div class="section-header">
-                        <div>
-                            <h2>Operations &amp; Route Schedules</h2>
-                            <p class="subtitle">Editable assignment roster for CEO and Branch Managers</p>
-                        </div>
-                        <div>
-                            <button class="btn btn-primary" onclick="addNewRoutePrompt()">+ Add Route Plan</button>
-                        </div>
-                    </div>
-                    
+                    <div class="section-header"><h2>Operations &amp; Route Schedules</h2></div>
                     <div class="card" style="border-left: 4px solid var(--purple);">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
-                            <h3 style="color: var(--purple);">Active Personnel & Duty Roster</h3>
-                            <button class="btn btn-warning" style="font-size:11px;" onclick="addPersonnelPrompt()">+ Register Personnel</button>
-                        </div>
+                        <h3 style="color: var(--purple);">Active Personnel & Duty Roster</h3>
                         <table>
-                            <thead><tr><th>Staff Name</th><th>Department / Role</th><th>Current Assignment / Duty</th><th>Status</th><th>Executive Assignment Actions</th></tr></thead>
+                            <thead><tr><th>Staff Name</th><th>Department / Role</th><th>Current Assignment / Duty</th><th>Status</th></tr></thead>
                             <tbody id="personnel-table"></tbody>
-                        </table>
-                    </div>
-
-                    <div class="card">
-                        <h3>Weekly Route Allocations</h3>
-                        <table>
-                            <thead><tr><th>Day</th><th>Assigned Route</th><th>Assigned Vehicle</th><th>Sales Agent</th><th>Status</th><th>Actions</th></tr></thead>
-                            <tbody id="route-table"></tbody>
                         </table>
                     </div>
                 </div>
 
                 <!-- 5. LOGISTICS & FLEET -->
                 <div id="sector-logistics" class="sector">
-                    <div class="section-header">
-                        <div>
-                            <h2>Deliveries, Fleet &amp; Supplier Inbound</h2>
-                            <p class="subtitle">Comprehensive Logistics Management Sector</p>
-                        </div>
-                    </div>
-
-                    <div class="delivery-tabs">
-                        <button class="delivery-tab-btn active" onclick="switchDeliveryRoom('vehicles')" id="dtab-vehicles">🚛 Delivery Vehicles Room</button>
-                        <button class="delivery-tab-btn" onclick="switchDeliveryRoom('parcels')" id="dtab-parcels">📦 Express Parcels Room</button>
-                        <button class="delivery-tab-btn" onclick="switchDeliveryRoom('suppliers')" id="dtab-suppliers">🏭 Supplier Inbound Room</button>
-                    </div>
-
-                    <div id="droom-vehicles" class="card">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                            <h3>Fleet Vehicles Registry</h3>
-                            <button class="btn btn-primary" onclick="addDriverPrompt()">+ Register Fleet Vehicle</button>
-                        </div>
+                    <div class="section-header"><h2>Deliveries, Fleet &amp; Supplier Inbound</h2></div>
+                    <div class="card">
+                        <h3>Fleet Vehicles Registry</h3>
                         <table>
-                            <thead><tr><th>Driver Profile</th><th>Vehicle Reg ID</th><th>Transit Status</th><th>Fuel &amp; Expenses</th><th>Actions</th></tr></thead>
+                            <thead><tr><th>Driver Profile</th><th>Vehicle Reg ID</th><th>Transit Status</th><th>Fuel &amp; Expenses</th></tr></thead>
                             <tbody id="logistics-table"></tbody>
-                        </table>
-                    </div>
-                    <div id="droom-parcels" class="card" style="display:none;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                            <h3>Express Parcel Deliveries</h3>
-                            <button class="btn btn-purple" onclick="addParcelPrompt()">+ Dispatch New Parcel</button>
-                        </div>
-                        <table>
-                            <thead><tr><th>Parcel ID</th><th>Sender Details</th><th>Recipient</th><th>Destination</th><th>Fee</th><th>Status</th></tr></thead>
-                            <tbody id="parcel-table"></tbody>
-                        </table>
-                    </div>
-                    <div id="droom-suppliers" class="card" style="display:none;">
-                        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
-                            <h3>Supplier Inbound Goods Approvals</h3>
-                            <button class="btn btn-warning" onclick="addSupplierDeliveryPrompt()">+ Log Incoming Supplier Delivery</button>
-                        </div>
-                        <table>
-                            <thead><tr><th>Ref ID</th><th>Supplier Name</th><th>Stock Description</th><th>Cargo Value</th><th>Status</th><th>Actions</th></tr></thead>
-                            <tbody id="supplier-delivery-table"></tbody>
                         </table>
                     </div>
                 </div>
 
                 <!-- 6. PROCUREMENT -->
                 <div id="sector-procurement" class="sector">
-                    <div class="section-header">
-                        <div>
-                            <h2>Procurement &amp; B2B Orders</h2>
-                            <p class="subtitle">Instant WhatsApp and Email Stock Purchase Invoices Sharing</p>
-                        </div>
-                    </div>
-                    
-                    <div class="card procurement-admin-only" style="border-left: 4px solid var(--accent-dark);">
-                        <h3 style="color: #38bdf8; margin-bottom: 12px;">Log B2B Supplier Purchase Order</h3>
-                        <div class="flex-row">
-                            <div class="form-group flex-col"><label>Supplier Name</label><input type="text" id="pro-vendor" placeholder="Supplier Company"></div>
-                            <div class="form-group flex-col"><label>Supplier Contact / WhatsApp Phone</label><input type="text" id="pro-contact" placeholder="e.g. 254700000000"></div>
-                            <div class="form-group flex-col"><label>Supplier Email</label><input type="text" id="pro-email" placeholder="email@supplier.com"></div>
-                            <div class="form-group flex-col"><label>Stock Materials</label><input type="text" id="pro-item" placeholder="Item description"></div>
-                            <div class="form-group flex-col"><label>Order Value (Ksh)</label><input type="number" id="pro-cost" placeholder="0.00"></div>
-                            <div class="form-group flex-col"><label>Order Status</label>
-                                <select id="pro-status">
-                                    <option>Ordered / Pending Cargo</option>
-                                    <option>In Transit / Customs</option>
-                                    <option>Delivered &amp; Reconciled</option>
-                                </select>
-                            </div>
-                        </div>
-                        <button class="btn btn-primary" onclick="addProcurementOrder()">Submit Procurement Order</button>
-                    </div>
+                    <div class="section-header"><h2>Procurement &amp; B2B Orders</h2></div>
                     <div class="card">
-                        <div style="overflow-x: auto;">
-                            <table>
-                                <thead><tr><th>Order ID</th><th>Supplier</th><th>Contact / Email</th><th>Stock Materials</th><th>Contract Cost</th><th>Status</th><th>WhatsApp &amp; Email Sharing Controls</th></tr></thead>
-                                <tbody id="procurement-table"></tbody>
-                            </table>
-                        </div>
+                        <table>
+                            <thead><tr><th>Order ID</th><th>Supplier</th><th>Contact / Email</th><th>Stock Materials</th><th>Contract Cost</th><th>Status</th></tr></thead>
+                            <tbody id="procurement-table"></tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -792,12 +674,40 @@
                         </div>
                     </div>
 
+                    <!-- LIVE EXCEL SHEET FOR CREDITS -->
+                    <div class="card" style="border: 2px solid var(--excel-green);">
+                        <h3 style="color:var(--excel-green); margin-bottom: 5px;">📝 Live Editable Credits Excel Sheet</h3>
+                        <p style="font-size:12px; color:var(--text-muted); margin-bottom:15px;">
+                            *Access Restricted to CEO, Account Manager, Accountant, and Finance Manager. 
+                            Click on any cell below to type and edit its contents.
+                        </p>
+                        <div class="excel-table-wrapper">
+                            <table class="excel-table" id="credit-excel-sheet">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Customer / Entity</th>
+                                        <th>Credit Amount (KES)</th>
+                                        <th>Status</th>
+                                        <th>Notes</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="credits-excel-body" contenteditable="true">
+                                    <!-- Dynamic Rows Loaded Here -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="margin-top: 15px; display: flex; gap: 10px;">
+                            <button class="btn btn-primary" onclick="addCreditRow()">+ Add Row</button>
+                            <button class="btn btn-success" onclick="saveCreditsExcel()">💾 Save Excel Changes</button>
+                        </div>
+                    </div>
+
                     <div id="executive-books-content">
-                        <div id="balance-sheet-status-bar" class="recon-box recon-balanced"></div>
                         <div class="account-book-grid" style="margin-top:20px;">
                             <div class="book-panel panel-assets">
                                 <h3>🏦 Assets Ledger</h3>
-                                <div class="book-row"><span>Cash &amp; Bank Monies</span><span id="bs-ast-cash">Ksh 0</span></div>
                                 <div class="book-row"><span>Inventory Valuation</span><span id="bs-ast-inv">Ksh 0</span></div>
                                 <div class="book-total"><span>Total Assets</span><span id="bs-ast-total">Ksh 0</span></div>
                             </div>
@@ -806,21 +716,21 @@
                                 <div class="book-row"><span>Accounts Payable</span><span id="bs-lia-ap">Ksh 0</span></div>
                                 <div class="book-total"><span>Total Liabilities</span><span id="bs-lia-total">Ksh 0</span></div>
                             </div>
-                            <div class="book-panel panel-equity">
-                                <h3>⚖️ Owner's Capital</h3>
-                                <div class="book-row"><span>Initial Owner Capital</span><span id="bs-equ-cap">Ksh 0</span></div>
-                                <div class="book-total"><span>Total Equity</span><span id="bs-equ-total">Ksh 0</span></div>
-                            </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 8. RECONCILIATION -->
                 <div id="sector-reconciliation" class="sector">
-                    <div class="section-header"><h2>Stock &amp; Sales Reconciliation Sector</h2></div>
+                    <div class="section-header">
+                        <div>
+                            <h2>Stock &amp; Sales Reconciliation Sector</h2>
+                            <p class="subtitle">Review and reconcile daily POS transactions</p>
+                        </div>
+                    </div>
                     <div class="card">
                         <table>
-                            <thead><tr><th>Receipt ID</th><th>Date</th><th>Customer</th><th>POS Total</th><th>Status</th></tr></thead>
+                            <thead><tr><th>Receipt ID</th><th>Date</th><th>Customer</th><th>POS Total (Ksh)</th><th>Action</th></tr></thead>
                             <tbody id="recon-queue-tbody"></tbody>
                         </table>
                     </div>
@@ -835,8 +745,11 @@
                         </div>
                     </div>
 
-                    <div class="digital-display-board">
-                        <div class="digital-time" id="live-digital-time">00:00:00</div>
+                    <!-- ARTIFICIAL INTELLIGENCE ASSISTANT -->
+                    <div class="ai-helper-box" style="display:block; background: rgba(16, 185, 129, 0.1); border-left-color: var(--success);">
+                        <strong style="color: var(--success); font-size: 15px;">🤖 AI Business Insights Assistant:</strong>
+                        <p id="ai-insight-text" style="margin-top: 8px; font-weight: 500; line-height: 1.5;">Analyzing your active operational and sales data...</p>
+                        <button class="btn btn-success" onclick="generateAIInsight()" style="margin-top:12px; font-size: 11px;">Generate New Insight</button>
                     </div>
 
                     <div class="dash-metrics">
@@ -849,25 +762,17 @@
                             <div class="dash-card-value" id="an-expenses">Ksh 0</div>
                         </div>
                     </div>
-
-                    <div class="bi-grid" style="display:grid; grid-template-columns: 1fr 1fr; gap: 20px;">
-                        <div class="card">
-                            <h3 style="color:#38bdf8; font-size: 15px; margin-bottom: 10px;">Business Scaling (Sales vs Margin)</h3>
-                            <canvas id="businessStatsChart" height="200"></canvas>
-                        </div>
-                        <div class="card">
-                            <h3 style="color:var(--success); font-size: 15px; margin-bottom: 10px;">Cost Structure Breakdown</h3>
-                            <canvas id="expensePieChart" height="200"></canvas>
-                        </div>
-                    </div>
                 </div>
 
                 <!-- 10. FINANCE -->
                 <div id="sector-finance" class="sector">
-                    <div class="section-header"><h2>Financial Cash Ledger</h2></div>
+                    <div class="section-header">
+                        <div><h2>Financial Cash Ledger</h2></div>
+                        <button class="btn btn-primary" onclick="addFinanceEntry()">+ Add Ledger Entry</button>
+                    </div>
                     <div class="card">
                         <table>
-                            <thead><tr><th>Date</th><th>Type</th><th>Entity</th><th>Purpose</th><th>Amount</th></tr></thead>
+                            <thead><tr><th>Date</th><th>Type</th><th>Entity</th><th>Purpose</th><th>Amount (Ksh)</th></tr></thead>
                             <tbody id="finance-table"></tbody>
                         </table>
                     </div>
@@ -875,10 +780,13 @@
 
                 <!-- 11. HR -->
                 <div id="sector-hr" class="sector">
-                    <div class="section-header"><h2>People &amp; Personnel Operations</h2></div>
+                    <div class="section-header">
+                        <div><h2>People &amp; Personnel Operations</h2></div>
+                        <button class="btn btn-purple" onclick="addEmployee()">+ Add Employee Profile</button>
+                    </div>
                     <div class="card">
                         <table>
-                            <thead><tr><th>Employee Name</th><th>Department</th><th>Salary Grade</th><th>Action</th></tr></thead>
+                            <thead><tr><th>Employee Name</th><th>Department</th><th>Salary Grade (Ksh)</th><th>Action</th></tr></thead>
                             <tbody id="hr-table"></tbody>
                         </table>
                     </div>
@@ -886,22 +794,25 @@
 
                 <!-- 12. ANNOUNCEMENTS -->
                 <div id="sector-announcements" class="sector">
-                    <div class="section-header"><h2>Company Notice Board</h2></div>
+                    <div class="section-header">
+                        <div><h2>Company Notice Board</h2></div>
+                        <button class="btn btn-warning" onclick="postNotice()">+ Post Notice Broadcast</button>
+                    </div>
                     <div class="quotes-banner">
                         <div class="quotes-icon">💡</div>
                         <div class="quotes-content">
                             <div class="quotes-title">Daily Leadership Wisdom</div>
-                            <div class="quotes-text" id="daily-quote-display">"Quality is not an act, it is a habit. Blue Stream Plumbing & Electrical Solutions Limited."</div>
+                            <div class="quotes-text">"Quality is not an act, it is a habit. Blue Stream Plumbing & Electrical Solutions Limited."</div>
                         </div>
                     </div>
-                    <div id="announcement-board"></div>
+                    <div id="announcement-board" style="display:flex; flex-direction:column; gap:15px;"></div>
                 </div>
 
             </div>
         </div>
     </div>
 
-    <!-- INVISIBLE PRINT RECEIPT & EXCEL CONTAINER -->
+    <!-- INVISIBLE PRINT RECEIPT CONTAINER -->
     <div id="print-area"></div>
 
     <script>
@@ -909,36 +820,24 @@
            CLOUD PERSISTENCE & STATE SYNCHRONIZATION
            ========================================== */
         let currentUser = null;
-        let businessStatsChartInst = null;
-        let expensePieChartInst = null;
-
         let users = [];
         let inventory = [];
         let currentCart = [];
-        let logistics = [];
-        let parcels = [];
-        let supplierDeliveries = [];
-        let hrData = [];
         let finances = [];
-        let procurementOrders = [];
+        let hrData = [];
         let announcements = [];
+        let procurementOrders = [];
         let invoices = [];
-        let personnelData = [
-            { id: 1, name: 'Lameck Owino', role: 'Sales Lead', duty: 'Counter & Route Sales', status: 'On Duty' },
-            { id: 2, name: 'Peter Ochieng', role: 'Store Keeper', duty: 'Inventory Dispatch', status: 'On Duty' }
-        ];
+        let credits = [];
 
-        let routesData = [
-            { id: 1, day: 'Monday', name: 'Awasi - Muhoroni Route', vehicle: 'KDJ 145L', rep: 'Lameck', status: 'Active' },
-            { id: 2, day: 'Tuesday', name: 'Sondu - Kendu Bay Route', vehicle: 'KDJ 145L', rep: 'Lameck', status: 'Active' }
-        ];
-
+        // Updated Roles matrix for Executive Books access
         const rolePermissions = {
             'CEO': ['home','inventory','sales','routes','logistics','procurement','accounts','reconciliation','stats','finance','hr','announcements'],
             'Finance Manager': ['home', 'accounts', 'finance', 'stats', 'announcements'],
+            'Account Manager': ['home', 'accounts', 'finance', 'announcements'],
+            'Accountant': ['home', 'accounts', 'finance', 'announcements'],
             'Store Manager': ['home', 'inventory', 'reconciliation', 'announcements'],
             'Sales': ['home', 'sales', 'reconciliation', 'announcements'],
-            'Branch Manager': ['home', 'inventory', 'sales', 'routes', 'logistics', 'announcements'],
             'Procurement Manager': ['home', 'procurement', 'inventory', 'announcements'],
             'Logistics Manager': ['home', 'routes', 'logistics', 'announcements'],
             'HR Manager': ['home', 'hr', 'announcements']
@@ -946,98 +845,48 @@
 
         const defaultUsers = [{ id: 1, name: "Admin", pass: "admin123", role: "CEO", status: "Approved" }];
 
+        // INVENTORY SEED INCLUDES YOUR EXTRACTED RECEIPT ITEMS
         const defaultInventorySeed = [
             { id: 101, name: 'WASTE PIPE 4" BROWN (WP4B)', category: 'Waste & Drainage', qty: 29, wholesale: 450, retail: 580 },
             { id: 102, name: 'PPR PIPE 25MM PN20', category: 'PPR Fittings', qty: 45, wholesale: 380, retail: 520 },
-            { id: 103, name: 'ELECTRICAL TRUNKING 20X10', category: 'Electrical Fittings', qty: 100, wholesale: 90, retail: 140 }
-        ];
-
-        const allCategories = [
-            "Waste & Drainage", "Electrical Fittings", "PPR Fittings", "Pipes & Tubing", "General Hardware",
-            "Toilet Fittings", "Ceramics", "Manhole Covers", "Water Tanks", "Valves", "PVC pipes and fitting"
-        ];
-
-        /* --- LOGO IMPORT FUNCTIONS --- */
-        function triggerLogoUpload() { document.getElementById('logo-file-input').click(); }
-        function handleLogoImport(event) {
-            let file = event.target.files[0];
-            if(file) {
-                let reader = new FileReader();
-                reader.onload = function(e) {
-                    let base64Logo = e.target.result;
-                    localStorage.setItem('bs_imported_logo', base64Logo);
-                    applyImportedLogo(base64Logo);
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-        function applyImportedLogo(logoSrc) {
-            if(!logoSrc) return;
-            let sidebarDisp = document.getElementById('sidebar-logo-display');
-            let authDisp = document.getElementById('auth-logo-preview');
-            let htmlImg = `<img src="${logoSrc}" class="logo-img-preview" alt="Company Logo">`;
-            if(sidebarDisp) sidebarDisp.innerHTML = htmlImg;
-            if(authDisp) authDisp.innerHTML = htmlImg;
-        }
-
-        /* --- AUTOMATED CATEGORY DETECTION --- */
-        function handleItemDescriptionInput(val) {
-            let autoCatSelect = document.getElementById('inv-new-category');
-            let lower = val.toLowerCase();
-
-            if (lower.includes('pvc')) { autoCatSelect.value = 'PVC pipes and fitting'; }
-            else if (lower.includes('ppr') || lower.includes('union') || lower.includes('socket ppr')) { autoCatSelect.value = 'PPR Fittings'; }
-            else if (lower.includes('electrical') || lower.includes('wire') || lower.includes('cable') || lower.includes('trunking') || lower.includes('switch') || lower.includes('socket')) { autoCatSelect.value = 'Electrical Fittings'; }
-            else if (lower.includes('waste') || lower.includes('drain') || lower.includes('trap') || lower.includes('plug')) { autoCatSelect.value = 'Waste & Drainage'; }
-            else if (lower.includes('toilet') || lower.includes('flush') || lower.includes('cistern')) { autoCatSelect.value = 'Toilet Fittings'; }
-            else if (lower.includes('tank')) { autoCatSelect.value = 'Water Tanks'; }
-            else if (lower.includes('valve') || lower.includes('stopcock')) { autoCatSelect.value = 'Valves'; }
-            else if (lower.includes('manhole')) { autoCatSelect.value = 'Manhole Covers'; }
-            else if (lower.includes('ceramic') || lower.includes('tile') || lower.includes('basin')) { autoCatSelect.value = 'Ceramics'; }
-            else if (lower.includes('pipe') || lower.includes('tubing')) { autoCatSelect.value = 'Pipes & Tubing'; }
+            { id: 103, name: 'ELECTRICAL TRUNKING 20X10', category: 'Electrical Fittings', qty: 100, wholesale: 90, retail: 140 },
             
-            calculateLiveMargin();
-        }
+            // Extracted Items from the uploaded Receipt
+            { id: 201, name: 'FLOOR TRAP 1 WAY', category: 'Waste & Drainage', qty: 100, wholesale: 130, retail: 180 },
+            { id: 202, name: 'WASTE TEE 4"- CEELANT', category: 'Waste & Drainage', qty: 100, wholesale: 120, retail: 170 },
+            { id: 203, name: 'WASTE BEND 4" CEELANT', category: 'Waste & Drainage', qty: 100, wholesale: 60, retail: 85 },
+            { id: 204, name: 'WASTE BEND 3" CEELANT', category: 'Waste & Drainage', qty: 100, wholesale: 60, retail: 85 },
+            { id: 205, name: 'WASTE BEND 3" 45 CEELANT', category: 'Waste & Drainage', qty: 100, wholesale: 55, retail: 80 }
+        ];
 
         /* --- DATA PERSISTENCE --- */
         function loadData() {
             if (localStorage.getItem('bs_users')) {
                 users = JSON.parse(localStorage.getItem('bs_users'));
                 inventory = JSON.parse(localStorage.getItem('bs_inventory'));
-                procurementOrders = JSON.parse(localStorage.getItem('bs_procurementOrders') || '[]');
                 invoices = JSON.parse(localStorage.getItem('bs_invoices') || '[]');
-                personnelData = JSON.parse(localStorage.getItem('bs_personnelData') || JSON.stringify(personnelData));
-                logistics = JSON.parse(localStorage.getItem('bs_logistics') || '[]');
-                parcels = JSON.parse(localStorage.getItem('bs_parcels') || '[]');
-                supplierDeliveries = JSON.parse(localStorage.getItem('bs_supplierDeliveries') || '[]');
+                credits = JSON.parse(localStorage.getItem('bs_credits') || '[]');
+                finances = JSON.parse(localStorage.getItem('bs_finances') || '[]');
+                hrData = JSON.parse(localStorage.getItem('bs_hrData') || '[]');
+                announcements = JSON.parse(localStorage.getItem('bs_announcements') || '[]');
             } else {
                 users = [...defaultUsers];
                 inventory = [...defaultInventorySeed];
                 saveData();
-            }
-
-            let logo = localStorage.getItem('bs_imported_logo');
-            if(logo) applyImportedLogo(logo);
-
-            let filterSelect = document.getElementById('inv-cat-filter');
-            if(filterSelect) {
-                filterSelect.innerHTML = '<option value="">All Categories</option>';
-                allCategories.forEach(cat => { filterSelect.innerHTML += `<option value="${cat}">${cat}</option>`; });
             }
         }
 
         function saveData() {
             localStorage.setItem('bs_users', JSON.stringify(users));
             localStorage.setItem('bs_inventory', JSON.stringify(inventory));
-            localStorage.setItem('bs_procurementOrders', JSON.stringify(procurementOrders));
             localStorage.setItem('bs_invoices', JSON.stringify(invoices));
-            localStorage.setItem('bs_personnelData', JSON.stringify(personnelData));
-            localStorage.setItem('bs_logistics', JSON.stringify(logistics));
-            localStorage.setItem('bs_parcels', JSON.stringify(parcels));
-            localStorage.setItem('bs_supplierDeliveries', JSON.stringify(supplierDeliveries));
+            localStorage.setItem('bs_credits', JSON.stringify(credits));
+            localStorage.setItem('bs_finances', JSON.stringify(finances));
+            localStorage.setItem('bs_hrData', JSON.stringify(hrData));
+            localStorage.setItem('bs_announcements', JSON.stringify(announcements));
         }
 
-        function initApp() {
+        document.addEventListener("DOMContentLoaded", () => {
             loadData();
             let savedUser = localStorage.getItem('bs_logged_user');
             if (savedUser) {
@@ -1047,16 +896,9 @@
                 document.getElementById('auth-screen').style.display = 'flex';
                 document.getElementById('app-container').style.display = 'none';
             }
-        }
-
-        document.addEventListener("DOMContentLoaded", initApp);
+        });
 
         /* --- AUTH & DASHBOARD LAUNCH --- */
-        function switchAuthMode(mode) {
-            document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById('atab-' + mode).classList.add('active');
-        }
-
         function handleLogin() {
             let uName = document.getElementById('login-user').value.trim();
             let pWord = document.getElementById('login-pass').value.trim();
@@ -1072,12 +914,8 @@
 
         function handleLogout() {
             localStorage.removeItem('bs_logged_user');
-            currentUser = null;
             location.reload();
         }
-        
-        function openCeoModal() { document.getElementById('ceo-modal').style.display = 'flex'; }
-        function closeCeoModal() { document.getElementById('ceo-modal').style.display = 'none'; }
 
         function launchDashboard() {
             document.getElementById('auth-screen').style.display = 'none';
@@ -1086,7 +924,7 @@
             document.getElementById('top-user-role').innerText = currentUser.role;
 
             if(currentUser.role === 'CEO') {
-                document.getElementById('btn-ceo-gateway').style.display = 'block';
+                document.getElementById('ceo-gateway-container').style.display = 'flex';
             }
 
             let allowed = rolePermissions[currentUser.role] || [];
@@ -1107,294 +945,97 @@
             document.body.setAttribute('data-sector', sector);
         }
 
-        function toggleSidebar() { document.getElementById('app-sidebar').classList.toggle('collapsed'); }
+        /* --- CEO SLIDEBAR TOGGLE --- */
+        function toggleCeoGateway(checkbox) {
+            if(checkbox.checked) {
+                document.getElementById('ceo-modal').style.display = 'flex';
+            } else {
+                document.getElementById('ceo-modal').style.display = 'none';
+            }
+        }
+        function closeCeoModal() { 
+            document.getElementById('ceo-modal').style.display = 'none'; 
+            let cb = document.getElementById('ceo-toggle-checkbox');
+            if(cb) cb.checked = false;
+        }
+
+        /* --- GENERAL DASHBOARD LOGIC --- */
         function toggleTheme() {
             let body = document.body;
-            let newTheme = body.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-            body.setAttribute('data-theme', newTheme);
-        }
-        function toggleAIHelper(sector) {
-            let el = document.getElementById('ai-help-' + sector);
-            if(el) el.style.display = (el.style.display === 'block') ? 'none' : 'block';
+            body.setAttribute('data-theme', body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
         }
 
-        /* --- DASHBOARD METRIC TOGGLE BREAKDOWN MODAL --- */
-        function toggleDashDetail(metricType) {
-            let modal = document.getElementById('dash-detail-modal');
-            let title = document.getElementById('dash-modal-title');
-            let body = document.getElementById('dash-modal-body');
-            body.innerHTML = '';
-
-            if(metricType === 'rev') {
-                title.innerText = '💰 Live Total Revenue Breakdown';
-                let total = invoices.reduce((s,i) => s + i.total, 0);
-                body.innerHTML = `<h4 style="margin-bottom:10px;">Total Completed Sales: KES ${total.toLocaleString()}</h4>`;
-                body.innerHTML += '<table><thead><tr><th>Receipt ID</th><th>Customer</th><th>Total (KES)</th></tr></thead><tbody>' +
-                    invoices.map(i => `<tr><td>${i.id}</td><td>${i.customer}</td><td>KES ${i.total.toLocaleString()}</td></tr>`).join('') +
-                    '</tbody></table>';
-            } else if(metricType === 'tickets') {
-                title.innerText = '🛒 Completed POS Tickets Breakdown';
-                body.innerHTML = `<h4 style="margin-bottom:10px;">Total Tickets Issued: ${invoices.length}</h4>`;
-                body.innerHTML += '<table><thead><tr><th>Receipt ID</th><th>Date</th><th>Payment Mode</th></tr></thead><tbody>' +
-                    invoices.map(i => `<tr><td>${i.id}</td><td>${i.date}</td><td>${i.paymentMode}</td></tr>`).join('') +
-                    '</tbody></table>';
-            } else if(metricType === 'inventory') {
-                title.innerText = '🏷️ Live Inventory Worth Breakdown';
-                let catMap = {};
-                inventory.forEach(i => { catMap[i.category] = (catMap[i.category] || 0) + (i.qty * i.wholesale); });
-                body.innerHTML = '<table><thead><tr><th>Category</th><th>Purchase Cost Worth (KES)</th></tr></thead><tbody>' +
-                    Object.keys(catMap).map(c => `<tr><td>${c}</td><td>KES ${catMap[c].toLocaleString()}</td></tr>`).join('') +
-                    '</tbody></table>';
-            } else if(metricType === 'skus') {
-                title.innerText = '📦 Total Active SKUs Catalog';
-                body.innerHTML = '<table><thead><tr><th>SKU ID</th><th>Item Description</th><th>Stock Qty</th></tr></thead><tbody>' +
-                    inventory.map(i => `<tr><td>${i.id}</td><td>${i.name}</td><td>${i.qty}</td></tr>`).join('') +
-                    '</tbody></table>';
-            }
-            modal.style.display = 'flex';
-        }
-        function closeDashDetailModal() { document.getElementById('dash-detail-modal').style.display = 'none'; }
-
-        /* --- CALCULATOR SLIDE BAR CONTROL --- */
-        function handleCalcDrawerSlide(val) {
-            let container = document.getElementById('pos-calculator-container');
-            let statusLbl = document.getElementById('slide-status-lbl');
-            if(val > 50) {
-                container.style.display = 'block';
-                container.style.opacity = '1';
-                statusLbl.innerText = 'Revealed';
-                statusLbl.style.color = 'var(--success)';
-            } else {
-                container.style.opacity = '0';
-                container.style.display = 'none';
-                statusLbl.innerText = 'Closed';
-                statusLbl.style.color = 'var(--danger)';
-            }
+        function refreshAll() {
+            renderInventory(); 
+            renderPOSCatalog(); 
+            updateDashboardMetrics();
+            loadCreditsExcel();
+            renderAccounts();
+            renderReconciliation();
+            renderFinance();
+            renderHR();
+            renderAnnouncements();
+            generateAIInsight();
         }
 
-        /* --- INVENTORY EDITING CONTROLS --- */
+        /* --- INVENTORY --- */
         function renderInventory() {
             let tbody = document.getElementById('inventory-table');
             if(!tbody) return;
-            let term = document.getElementById('inv-search-input').value.toLowerCase();
-            let catFilter = document.getElementById('inv-cat-filter').value;
             tbody.innerHTML = '';
-            let catTotals = {}; let grandTotal = 0;
+            let term = document.getElementById('inv-search-input')?.value.toLowerCase() || '';
+            let grandTotal = 0;
 
             inventory.forEach(item => {
                 let itemTotal = item.qty * item.wholesale;
-                catTotals[item.category] = (catTotals[item.category] || 0) + itemTotal;
                 grandTotal += itemTotal;
                 let unitProfit = item.retail - item.wholesale;
                 let margin = item.wholesale > 0 ? ((unitProfit / item.wholesale) * 100).toFixed(1) : 0;
 
-                if(item.name.toLowerCase().includes(term) || item.id.toString().includes(term)) {
-                    if(!catFilter || item.category === catFilter) {
-                        tbody.innerHTML += `<tr>
-                            <td style="font-family:monospace; color:var(--accent);">${item.id}</td>
-                            <td><span class="badge" style="background:var(--border); color:var(--text);">${item.category}</span></td>
-                            <td style="font-weight:600;">${item.name}</td>
-                            <td style="font-weight:bold;">${item.qty}</td>
-                            <td>KES ${item.wholesale.toLocaleString()}</td>
-                            <td style="color:#38bdf8; font-weight:700;">KES ${item.retail.toLocaleString()}</td>
-                            <td style="color:var(--success); font-weight:bold;">KES ${unitProfit.toLocaleString()}</td>
-                            <td style="color:var(--success);">${margin}%</td>
-                            <td>
-                                <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                                    <button class="btn btn-warning" style="padding:3px 6px; font-size:10px;" onclick="editInventoryQty(${item.id})">Qty</button>
-                                    <button class="btn btn-cyan" style="padding:3px 6px; font-size:10px;" onclick="editInventoryWholesale(${item.id})">Wholesale</button>
-                                    <button class="btn btn-primary" style="padding:3px 6px; font-size:10px;" onclick="editInventoryRetail(${item.id})">Retail</button>
-                                    <button class="btn btn-danger" style="padding:3px 6px; font-size:10px;" onclick="removeInventoryItem(${item.id})">Remove</button>
-                                </div>
-                            </td>
-                        </tr>`;
-                    }
+                if(item.name.toLowerCase().includes(term)) {
+                    tbody.innerHTML += `<tr>
+                        <td>${item.id}</td>
+                        <td><span class="badge" style="background:var(--border); color:var(--text);">${item.category}</span></td>
+                        <td><b>${item.name}</b></td>
+                        <td>${item.qty}</td>
+                        <td>KES ${item.wholesale}</td>
+                        <td style="color:#38bdf8;">KES ${item.retail}</td>
+                        <td style="color:var(--success);">KES ${unitProfit}</td>
+                        <td style="color:var(--success);">${margin}%</td>
+                        <td><button class="btn btn-warning" style="padding:4px;" onclick="editInventoryQty(${item.id})">Edit Qty</button></td>
+                    </tr>`;
                 }
             });
-
-            let catContainer = document.getElementById('category-valuation-container');
-            if(catContainer) {
-                catContainer.innerHTML = '';
-                for(let cat in catTotals) {
-                    if(catTotals[cat] > 0) {
-                        catContainer.innerHTML += `<div class="cat-val-card"><div class="cat-val-name">${cat}</div><div class="cat-val-amount">Ksh ${catTotals[cat].toLocaleString()}</div></div>`;
-                    }
-                }
-                document.getElementById('total-inventory-worth-sum').innerText = `Ksh ${grandTotal.toLocaleString()}`;
-            }
+            let titleEl = document.getElementById('total-inventory-worth-sum');
+            if(titleEl) titleEl.innerText = `Ksh ${grandTotal.toLocaleString()}`;
         }
-
-        function filterInventoryTable() { renderInventory(); }
-
-        function addNewInventoryItem() {
-            let name = document.getElementById('inv-new-name').value; 
-            let cat = document.getElementById('inv-new-category').value; 
-            let qty = parseInt(document.getElementById('inv-new-qty').value) || 0; 
-            let whole = parseFloat(document.getElementById('inv-new-wholesale').value) || 0; 
-            let ret = parseFloat(document.getElementById('inv-new-retail').value) || 0;
-            if(!name) return; 
-            inventory.push({ id: Date.now(), name: name, category: cat, qty: qty, wholesale: whole, retail: ret });
-            saveData(); refreshAll(); 
-        }
-
         function editInventoryQty(id) {
             let item = inventory.find(i => i.id === id);
-            if(!item) return;
-            let n = prompt("Edit Quantity for " + item.name + ":", item.qty);
+            let n = prompt("Edit Quantity:", item.qty);
             if(n !== null && !isNaN(n)) { item.qty = parseInt(n); saveData(); refreshAll(); }
         }
 
-        function editInventoryWholesale(id) {
-            let item = inventory.find(i => i.id === id);
-            if(!item) return;
-            let n = prompt("Edit Wholesale Price (KES) for " + item.name + ":", item.wholesale);
-            if(n !== null && !isNaN(n)) { item.wholesale = parseFloat(n); saveData(); refreshAll(); }
-        }
-
-        function editInventoryRetail(id) {
-            let item = inventory.find(i => i.id === id);
-            if(!item) return;
-            let n = prompt("Edit Retail Price (KES) for " + item.name + ":", item.retail);
-            if(n !== null && !isNaN(n)) { item.retail = parseFloat(n); saveData(); refreshAll(); }
-        }
-
-        function removeInventoryItem(id) {
-            if(confirm("Are you sure you want to permanently remove this product item?")) {
-                inventory = inventory.filter(i => i.id !== id);
-                saveData(); refreshAll();
-            }
-        }
-
-        function calculateLiveMargin() {
-            let whole = parseFloat(document.getElementById('inv-new-wholesale').value) || 0;
-            let ret = parseFloat(document.getElementById('inv-new-retail').value) || 0;
-            let profit = ret - whole;
-            let margin = whole > 0 ? ((profit / whole) * 100).toFixed(1) : 0;
-            let display = document.getElementById('live-margin-display');
-            display.innerText = `${margin}% (Ksh ${profit.toLocaleString()} Profit)`;
-        }
-
-        function applyAiSuggestion() {
-            let whole = parseFloat(document.getElementById('inv-new-wholesale').value) || 0;
-            if(whole > 0) {
-                document.getElementById('inv-new-retail').value = Math.round(whole * 1.35 / 10) * 10;
-                calculateLiveMargin();
-            }
-        }
-
-        /* --- OPERATIONS & PERSONNEL EDITABLE ROSTER --- */
-        function renderPersonnel() {
-            let tbody = document.getElementById('personnel-table');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            personnelData.forEach(p => {
-                let isExec = ['CEO', 'Branch Manager'].includes(currentUser.role);
-                tbody.innerHTML += `<tr>
-                    <td><b>${p.name}</b></td>
-                    <td>${p.role}</td>
-                    <td>${p.duty}</td>
-                    <td><span class="badge" style="background:var(--success);">${p.status}</span></td>
-                    <td>
-                        ${isExec ? `<button class="btn btn-warning" style="padding:4px 8px; font-size:11px;" onclick="editPersonnelAssignment(${p.id})">Edit Duty & Role</button>` : '<span style="font-size:11px; color:var(--text-muted);">View Only</span>'}
-                    </td>
-                </tr>`;
-            });
-        }
-
-        function editPersonnelAssignment(id) {
-            let person = personnelData.find(p => p.id === id);
-            if(!person) return;
-            let newRole = prompt("Assign New Role / Title for " + person.name + ":", person.role);
-            if(!newRole) return;
-            let newDuty = prompt("Assign Duty / Assignment for " + person.name + ":", person.duty);
-            if(newDuty) {
-                person.role = newRole;
-                person.duty = newDuty;
-                saveData(); refreshAll();
-            }
-        }
-
-        function addPersonnelPrompt() {
-            let name = prompt("Enter Staff Personnel Name:");
-            if(!name) return;
-            let role = prompt("Enter Department / Role:");
-            let duty = prompt("Enter Duty Assignment:");
-            personnelData.push({ id: Date.now(), name, role: role || 'Staff', duty: duty || 'On Duty', status: 'On Duty' });
-            saveData(); refreshAll();
-        }
-
-        /* --- PROCUREMENT WHATSAPP & EMAIL SHARING --- */
-        function addProcurementOrder() {
-            let vendor = document.getElementById('pro-vendor').value;
-            let contact = document.getElementById('pro-contact').value;
-            let email = document.getElementById('pro-email').value;
-            let item = document.getElementById('pro-item').value;
-            let cost = parseFloat(document.getElementById('pro-cost').value) || 0;
-            let stat = document.getElementById('pro-status').value;
-            if(!vendor) return;
-            procurementOrders.push({ id: Date.now(), vendor, contact, email, item, cost, status: stat });
-            saveData(); refreshAll();
-        }
-
-        function renderProcurement() {
-            let tbody = document.getElementById('procurement-table');
-            if(!tbody) return;
-            tbody.innerHTML = '';
-            procurementOrders.forEach(o => {
-                let invoiceMsg = `*BLUE STREAM PLUMBING AND ELECTRICAL SOLUTIONS LIMITED*\n*PURCHASE ORDER INVOICE*\nOrder Ref: #${o.id}\nSupplier: ${o.vendor}\nMaterials: ${o.item}\nTotal Value: KES ${o.cost.toLocaleString()}\nStatus: ${o.status}`;
-                
-                let waExecUrl = `https://wa.me/?text=${encodeURIComponent(invoiceMsg + '\n[Shared with Executives]')}`;
-                let waSupplierUrl = `https://wa.me/${o.contact.replace(/[^0-9]/g, '')}?text=${encodeURIComponent(invoiceMsg)}`;
-                let mailUrl = `mailto:${o.email}?subject=${encodeURIComponent('Purchase Order Invoice #' + o.id)}&body=${encodeURIComponent(invoiceMsg)}`;
-
-                tbody.innerHTML += `<tr>
-                    <td>#${o.id}</td>
-                    <td><b>${o.vendor}</b></td>
-                    <td>${o.contact}<br>${o.email}</td>
-                    <td>${o.item}</td>
-                    <td>KES ${o.cost.toLocaleString()}</td>
-                    <td>${o.status}</td>
-                    <td>
-                        <div style="display:flex; gap:4px; flex-wrap:wrap;">
-                            <a href="${waExecUrl}" target="_blank" class="btn btn-success" style="padding:3px 6px; font-size:10px; text-decoration:none;">WhatsApp Exec</a>
-                            <a href="${waSupplierUrl}" target="_blank" class="btn btn-primary" style="padding:3px 6px; font-size:10px; text-decoration:none;">WhatsApp Supplier</a>
-                            <a href="${mailUrl}" class="btn btn-cyan" style="padding:3px 6px; font-size:10px; text-decoration:none;">Email Invoice</a>
-                        </div>
-                    </td>
-                </tr>`;
-            });
-        }
-
-        /* --- GENERAL REFRESH & UTILITIES --- */
-        function refreshAll() {
-            renderInventory(); renderPOSCatalog(); renderPersonnel();
-            renderProcurement(); renderAccounts(); updateDashboardMetrics();
-        }
-
-        function renderPOSCatalog() {
+        /* --- POS SALES & PRINTING RECEIPTS --- */
+function renderPOSCatalog() {
             let tbody = document.getElementById('pos-catalog');
             if(!tbody) return;
             tbody.innerHTML = '';
             inventory.forEach(item => {
                 tbody.innerHTML += `<tr>
-                    <td>${item.name}</td>
-                    <td>${item.qty}</td>
-                    <td>KES ${item.retail.toLocaleString()}</td>
-                    <td><button class="btn btn-primary" style="padding:3px 6px; font-size:10px;" onclick="addToCart(${item.id})">Add</button></td>
+                    <td>${item.name}</td><td>${item.qty}</td><td>KES ${item.retail}</td>
+                    <td><button class="btn btn-primary" style="padding:4px;" onclick="addToCart(${item.id})">Add</button></td>
                 </tr>`;
             });
         }
-
         function addToCart(id) {
             let item = inventory.find(i => i.id === id);
             if(item && item.qty > 0) {
                 let existing = currentCart.find(c => c.id === id);
-                if(existing) { existing.cartQty++; }
-                else { currentCart.push({...item, cartQty: 1}); }
+                if(existing) existing.cartQty++;
+                else currentCart.push({...item, cartQty: 1});
                 item.qty--; renderPOSCatalog(); renderCart();
             }
         }
-
         function renderCart() {
             let container = document.getElementById('pos-cart');
             let subtotal = 0;
@@ -1403,25 +1044,240 @@
                 let itemTotal = c.cartQty * c.retail;
                 subtotal += itemTotal;
                 container.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:6px; font-size:12px;">
-                    <span>${c.name} (x${c.cartQty})</span>
-                    <span>KES ${itemTotal.toLocaleString()}</span>
+                    <span>${c.name} (x${c.cartQty})</span><span>KES ${itemTotal.toLocaleString()}</span>
                 </div>`;
             });
             document.getElementById('pos-subtotal').innerText = subtotal.toLocaleString();
             document.getElementById('pos-total').innerText = subtotal.toLocaleString();
         }
 
+        // Updated Ticket Checkout matched exactly to your requested sample format
         function executeSale() {
             if(currentCart.length === 0) return;
-            let customer = document.getElementById('pos-customer').value || 'Counter Customer';
+            let customer = document.getElementById('pos-customer').value || 'WALK-IN CUSTOMER';
+            let mobile = prompt("Enter Customer Mobile for Receipt (Optional):") || 'N/A';
             let payMode = document.getElementById('pos-payment-mode').value;
             let total = currentCart.reduce((s,i) => s + (i.cartQty * i.retail), 0);
             
-            invoices.push({ id: 'INV-' + Date.now().toString().slice(-4), date: new Date().toLocaleTimeString(), customer, paymentMode: payMode, total });
+            let invDate = new Date();
+            let dateStr = invDate.toLocaleDateString('en-GB').replace(/\//g, '-') + ' ' + invDate.toLocaleTimeString('en-US', {hour: '2-digit', minute:'2-digit'});
+            let invId = 'BSM' + invDate.getFullYear() + '-' + Date.now().toString().slice(-4);
+            let totalQty = currentCart.reduce((s,i) => s + i.cartQty, 0);
+            let tax = total * 0.16;
+
+            let receiptHTML = `
+                <div style="max-width: 320px; margin: 0 auto; font-family: 'Courier New', Courier, monospace; font-size: 14px; color: black; background: white; padding: 10px;">
+                    <div style="text-align: center;">
+                        <h2 style="margin: 0; font-size: 18px; font-weight: bold; letter-spacing: 2px;">INVOICE</h2>
+                        <h3 style="margin: 6px 0; font-size: 14px;">BLUE STREAM PLUMBING AND ELECTRICAL SOLUTIONS LIMITED</h3>
+                        <p style="margin: 2px 0; font-size: 13px;">P.O BOX 2884-00200, Nairobi</p>
+                        <p style="margin: 2px 0; font-size: 13px;">TEL: 0743551984 / 0785848821</p>
+                        <br>
+                        <p style="margin: 2px 0; font-size: 13px; font-weight:bold;">PAY BILL NO. 522533</p>
+                        <p style="margin: 2px 0; font-size: 13px; font-weight:bold;">ACCOUNT NO. BSPLUMBING</p>
+                    </div>
+                    
+                    <br>
+                    
+                    <div style="margin-bottom: 10px; font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between;"><span>Invoice No.</span><span>${invId}</span></div>
+                        <div style="display: flex; justify-content: space-between;"><span>Date</span><span>${dateStr}</span></div>
+                        <div style="margin-top: 5px;">Customer: ${customer},</div>
+                        <div>Mobile: ${mobile}</div>
+                    </div>
+
+                    <div style="border-bottom: 1px dashed black; margin: 10px 0;"></div>
+                    
+                    <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead>
+                            <tr style="border-bottom: 1px dashed black;">
+                                <th style="text-align: left; padding-bottom: 5px;"># Item</th>
+                                <th style="text-align: center; padding-bottom: 5px;">QTY</th>
+                                <th style="text-align: right; padding-bottom: 5px;">Price</th>
+                                <th style="text-align: right; padding-bottom: 5px;">total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${currentCart.map((c, i) => `
+                                <tr><td colspan="4" style="text-align: left; padding-top: 5px; font-weight: bold;">${i+1} ${c.name}</td></tr>
+                                <tr>
+                                    <td></td>
+                                    <td style="text-align: center;">${c.cartQty} Pc(s)</td>
+                                    <td style="text-align: right;">${c.retail.toFixed(2)}</td>
+                                    <td style="text-align: right;">${(c.cartQty * c.retail).toFixed(2)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+
+                    <div style="border-bottom: 1px dashed black; margin: 10px 0;"></div>
+
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                        <tr><td style="text-align: right; padding-right: 20px;">QTY</td><td style="text-align: right;">${totalQty}.00</td></tr>
+                        <tr><td style="text-align: right; padding-right: 20px;">Subtotal</td><td style="text-align: right;">KSh ${total.toFixed(2)}</td></tr>
+                        <tr><td style="text-align: right; padding-right: 20px; font-weight: bold;">Total:</td><td style="text-align: right; font-weight: bold;">KSh ${total.toFixed(2)}</td></tr>
+                        <tr><td style="text-align: right; padding-right: 20px;">${payMode} [NEW]</td><td style="text-align: right;">KSh ${total.toFixed(2)}</td></tr>
+                        <tr><td style="text-align: right; padding-right: 20px;">Total paid</td><td style="text-align: right;">KSh ${total.toFixed(2)}</td></tr>
+                        <tr><td style="text-align: right; padding-right: 20px;">Due</td><td style="text-align: right;">0</td></tr>
+                    </table>
+
+                    <div style="border-bottom: 1px dashed black; margin: 10px 0;"></div>
+                    
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                        <tr><td style="text-align: left;">VAT</td><td style="text-align: right;">KSh ${tax.toFixed(2)}</td></tr>
+                        <tr><td style="text-align: left; font-weight:bold;">Total tax:</td><td style="text-align: right; font-weight:bold;">KSh ${tax.toFixed(2)}</td></tr>
+                    </table>
+
+                    <div style="border-bottom: 1px dashed black; margin: 10px 0;"></div>
+                    <div style="text-align: center; font-size: 12px; font-weight: bold; margin-top: 15px;">GOODS NOT returnable after sale. THANK YOU!</div>
+                </div>
+            `;
+            
+            document.getElementById('print-area').innerHTML = receiptHTML;
+            window.print();
+            
+            invoices.push({ id: invId, date: dateStr, customer, paymentMode: payMode, total });
             currentCart = []; renderCart(); saveData(); refreshAll();
-            alert("Sale completed and ticket receipt issued!");
         }
 
+        /* --- EXECUTIVE BOOKS: LIVE EDITABLE EXCEL FOR CREDITS --- */
+        function addCreditRow() {
+            let tbody = document.getElementById('credits-excel-body');
+            let tr = document.createElement('tr');
+            tr.innerHTML = `<td>YYYY-MM-DD</td><td>Client Name</td><td>0.00</td><td>Pending</td><td>Notes...</td><td contenteditable="false"><button onclick="this.parentElement.parentElement.remove()" class="btn btn-danger" style="padding:4px; font-size:10px;">Remove</button></td>`;
+            tbody.appendChild(tr);
+        }
+
+        function saveCreditsExcel() {
+            let tbody = document.getElementById('credits-excel-body');
+            let rows = tbody.querySelectorAll('tr');
+            let data = [];
+            rows.forEach(r => {
+                let cells = r.querySelectorAll('td');
+                if(cells.length >= 5) {
+                    data.push({
+                        date: cells[0].innerText.trim(),
+                        entity: cells[1].innerText.trim(),
+                        amount: cells[2].innerText.trim(),
+                        status: cells[3].innerText.trim(),
+                        notes: cells[4].innerText.trim()
+                    });
+                }
+            });
+            credits = data;
+            saveData();
+            alert("Credits Excel Data Saved Automatically to Cloud!");
+        }
+
+        function loadCreditsExcel() {
+            let tbody = document.getElementById('credits-excel-body');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            credits.forEach(d => {
+                tbody.innerHTML += `<tr>
+                    <td>${d.date}</td><td>${d.entity}</td><td>${d.amount}</td><td>${d.status}</td><td>${d.notes}</td>
+                    <td contenteditable="false"><button onclick="this.parentElement.parentElement.remove()" class="btn btn-danger" style="padding:4px; font-size:10px;">Remove</button></td>
+                </tr>`;
+            });
+        }
+
+        /* --- RECONCILIATION --- */
+        function renderReconciliation() {
+            let tbody = document.getElementById('recon-queue-tbody');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            invoices.forEach(inv => {
+                tbody.innerHTML += `<tr>
+                    <td><b>${inv.id}</b></td><td>${inv.date}</td><td>${inv.customer}</td>
+                    <td style="color:#38bdf8; font-weight:bold;">Ksh ${inv.total.toLocaleString()}</td>
+                    <td><button class="btn btn-warning" style="padding:4px 10px; font-size:11px;" onclick="alert('Receipt ${inv.id} manually reconciled.')">Reconcile Ledger</button></td>
+                </tr>`;
+            });
+        }
+
+        /* --- FINANCE LEDGER --- */
+        function renderFinance() {
+            let tbody = document.getElementById('finance-table');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            finances.forEach(f => {
+                tbody.innerHTML += `<tr><td>${f.date}</td><td>${f.type}</td><td>${f.entity}</td><td>${f.purpose}</td><td style="color:var(--success);">Ksh ${f.amount}</td></tr>`;
+            });
+        }
+        function addFinanceEntry() {
+            let entity = prompt("Entity Name (Supplier/Bank/Cashier):");
+            if(!entity) return;
+            let type = prompt("Type (Income / Expense):");
+            let purpose = prompt("Purpose of funds:");
+            let amount = parseFloat(prompt("Amount (Ksh):")) || 0;
+            finances.push({ date: new Date().toLocaleDateString(), type, entity, purpose, amount });
+            saveData(); refreshAll();
+        }
+
+        /* --- HR & PERSONNEL --- */
+        function renderHR() {
+            let tbody = document.getElementById('hr-table');
+            if(!tbody) return;
+            tbody.innerHTML = '';
+            hrData.forEach(h => {
+                tbody.innerHTML += `<tr><td><b>${h.name}</b></td><td>${h.dept}</td><td>Ksh ${h.salary.toLocaleString()}</td><td><span class="badge" style="background:var(--success)">Active</span></td></tr>`;
+            });
+        }
+        function addEmployee() {
+            let name = prompt("Employee Full Name:");
+            if(!name) return;
+            let dept = prompt("Department:");
+            let salary = parseFloat(prompt("Salary Grade (Ksh):")) || 0;
+            hrData.push({ name, dept, salary });
+            saveData(); refreshAll();
+        }
+
+        /* --- NOTICE BOARD --- */
+        function renderAnnouncements() {
+            let board = document.getElementById('announcement-board');
+            if(!board) return;
+            board.innerHTML = '';
+            if(announcements.length === 0) {
+                board.innerHTML = '<p style="color:var(--text-muted); font-size:13px;">No active announcements.</p>';
+            }
+            announcements.forEach(a => {
+                board.innerHTML += `<div style="background:var(--card-inner); padding:15px; border-radius:10px; border-left:4px solid var(--accent);">
+                    <div style="font-size:11px; color:var(--text-muted); margin-bottom:5px;">${a.date} | By: ${a.author}</div>
+                    <div style="font-size:14px; font-weight:600;">${a.message}</div>
+                </div>`;
+            });
+        }
+        function postNotice() {
+            let msg = prompt("Enter Broadcast Notice:");
+            if(msg) {
+                announcements.push({ date: new Date().toLocaleDateString(), author: currentUser.name, message: msg });
+                saveData(); refreshAll();
+            }
+        }
+
+        /* --- AI ANALYTICS HUB INSIGHTS --- */
+        function generateAIInsight() {
+            let el = document.getElementById('ai-insight-text');
+            if(!el) return;
+            
+            let totalSales = invoices.reduce((s,i) => s + i.total, 0);
+            let totalInvWorth = inventory.reduce((s,i) => s + (i.qty * i.wholesale), 0);
+            
+            document.getElementById('an-gross').innerText = `Ksh ${totalSales.toLocaleString()}`;
+            document.getElementById('an-expenses').innerText = `Ksh ${(totalSales * 0.2).toLocaleString()}`; // Estimated
+            
+            const insights = [
+                `Based on ${invoices.length} active receipts, increasing stock depth on top-selling Waste & Drainage lines will protect your profit margins.`,
+                `Your current inventory valuation stands at Ksh ${totalInvWorth.toLocaleString()}. Consider bundling slow-moving PPR pipes with electrical sales.`,
+                `Cash flow is stable. Implementing slight cross-selling techniques at the counter could boost average ticket size by 15%.`,
+                `Data indicates positive trends. Ensure you reconcile daily to prevent shrinkage against your live inventory worth of Ksh ${totalInvWorth.toLocaleString()}.`
+            ];
+            
+            let randomInsight = insights[Math.floor(Math.random() * insights.length)];
+            el.innerText = randomInsight;
+        }
+
+        /* --- GENERAL DASHBOARD METRICS --- */
         function updateDashboardMetrics() {
             let totalRev = invoices.reduce((s,i) => s + i.total, 0);
             let totalInv = inventory.reduce((s,i) => s + (i.qty * i.wholesale), 0);
@@ -1432,39 +1288,11 @@
             document.getElementById('dash-metric-products').innerText = inventory.length;
         }
 
-        function switchSalesRoom(room) {
-            document.getElementById('sroom-pos').style.display = room === 'pos' ? 'grid' : 'none';
-            document.getElementById('sroom-archive').style.display = room === 'archive' ? 'block' : 'none';
-        }
-
-        function switchDeliveryRoom(room) {
-            document.getElementById('droom-vehicles').style.display = room === 'vehicles' ? 'block' : 'none';
-            document.getElementById('droom-parcels').style.display = room === 'parcels' ? 'block' : 'none';
-            document.getElementById('droom-suppliers').style.display = room === 'suppliers' ? 'block' : 'none';
-        }
-
-        /* --- CALCULATOR BASIC ENGINE --- */
-        let calcVal = '';
-        function calcPush(val) { calcVal += val; document.getElementById('calc-display').value = calcVal; }
-        function calcClear() { calcVal = ''; document.getElementById('calc-display').value = ''; }
-        function calcEval() { try { calcVal = eval(calcVal).toString(); document.getElementById('calc-display').value = calcVal; } catch(e) { calcClear(); } }
-
         function renderAccounts() {
             let totalInv = inventory.reduce((s,i) => s + (i.qty * i.wholesale), 0);
             document.getElementById('bs-ast-inv').innerText = `Ksh ${totalInv.toLocaleString()}`;
             document.getElementById('bs-ast-total').innerText = `Ksh ${totalInv.toLocaleString()}`;
         }
-
-        function adminRegisterUser() {
-            let user = document.getElementById('reg-user').value.trim(); 
-            let pass = document.getElementById('reg-pass').value.trim(); 
-            let role = document.getElementById('reg-role').value;
-            if(!user || !pass) return;
-            users.push({id: Date.now(), name: user, pass: pass, role: role, status: 'Approved'}); 
-            saveData(); refreshAll(); 
-        }
-
-        function closeCeoModal() { document.getElementById('ceo-modal').style.display = 'none'; }
     </script>
 </body>
 </html>
