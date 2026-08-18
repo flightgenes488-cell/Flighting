@@ -497,17 +497,13 @@
                             </div>
                             <div class="form-group flex-col"><label>Category</label>
                                 <select id="inv-new-category">
-                                    <option value="Waste & Drainage">Waste & Drainage Pipes/Plugs</option>
-                                    <option value="Electrical Fittings">Electrical & Trunking</option>
-                                    <option value="PPR Fittings">PPR Fittings & Valves</option>
-                                    <option value="Pipes & Tubing">Pipes & Tubing</option>
-                                    <option value="General Hardware">General Hardware</option>
-                                    <option value="Toilet Fittings">Toilet Fittings</option>
-                                    <option value="Ceramics">Ceramics</option>
-                                    <option value="Manhole Covers">Manhole Covers</option>
-                                    <option value="Water Tanks">Water Tanks</option>
-                                    <option value="Valves">Valves</option>
-                                    <option value="PVC pipes and fitting">PVC pipes and fitting</option>
+                                    <option value="Waste & Drainage Fittings">Waste & Drainage Fittings</option>
+                                    <option value="Electricals & Electrical Fittings">Electricals & Electrical Fittings</option>
+                                    <option value="PPR Standard Fittings">PPR Standard Fittings</option>
+                                    <option value="PPR Threaded Fittings">PPR Threaded Fittings</option>
+                                    <option value="PPR Pipes & Rolls">PPR Pipes & Rolls</option>
+                                    <option value="Taps, Valves & Brass Fittings">Taps, Valves & Brass Fittings</option>
+                                    <option value="Sanitaryware & Accessories">Sanitaryware & Accessories</option>
                                 </select>
                             </div>
                             <div class="form-group flex-col"><label>Initial Stock Qty</label><input type="number" id="inv-new-qty" placeholder="0"></div>
@@ -845,18 +841,258 @@
 
         const defaultUsers = [{ id: 1, name: "Admin", pass: "admin123", role: "CEO", status: "Approved" }];
 
-        // INVENTORY SEED INCLUDES YOUR EXTRACTED RECEIPT ITEMS
-        const defaultInventorySeed = [
-            { id: 101, name: 'WASTE PIPE 4" BROWN (WP4B)', category: 'Waste & Drainage', qty: 29, wholesale: 450, retail: 580 },
-            { id: 102, name: 'PPR PIPE 25MM PN20', category: 'PPR Fittings', qty: 45, wholesale: 380, retail: 520 },
-            { id: 103, name: 'ELECTRICAL TRUNKING 20X10', category: 'Electrical Fittings', qty: 100, wholesale: 90, retail: 140 },
-            
-            // Extracted Items from the uploaded Receipt
-            { id: 201, name: 'FLOOR TRAP 1 WAY', category: 'Waste & Drainage', qty: 100, wholesale: 130, retail: 180 },
-            { id: 202, name: 'WASTE TEE 4"- CEELANT', category: 'Waste & Drainage', qty: 100, wholesale: 120, retail: 170 },
-            { id: 203, name: 'WASTE BEND 4" CEELANT', category: 'Waste & Drainage', qty: 100, wholesale: 60, retail: 85 },
-            { id: 204, name: 'WASTE BEND 3" CEELANT', category: 'Waste & Drainage', qty: 100, wholesale: 60, retail: 85 },
-            { id: 205, name: 'WASTE BEND 3" 45 CEELANT', category: 'Waste & Drainage', qty: 100, wholesale: 55, retail: 80 }
+        // INVENTORY SEED POPULATED FROM `inventorySuggestions`
+        const defaultInventorySuggestions = [
+          // PPR Standard Fittings
+          { category: "PPR Standard Fittings", name: "Steel Ball Cork - 20mm", wholesalePrice: 55 },
+          { category: "PPR Standard Fittings", name: "Steel Ball Cork - 25mm", wholesalePrice: 75 },
+          { category: "PPR Standard Fittings", name: "Steel Ball Cork - 32mm", wholesalePrice: 110 },
+          { category: "PPR Standard Fittings", name: "Steel Ball Cork - 40mm", wholesalePrice: 200 },
+          { category: "PPR Standard Fittings", name: "Steel Ball Cork - 50mm", wholesalePrice: 300 },
+          { category: "PPR Standard Fittings", name: "Steel Ball Cork - 63mm", wholesalePrice: 480 },
+          { category: "PPR Standard Fittings", name: "Female Thread Union - 20mm", wholesalePrice: 75 },
+          { category: "PPR Standard Fittings", name: "Female Thread Union - 25mm", wholesalePrice: 90 },
+          { category: "PPR Standard Fittings", name: "Female Thread Union - 32mm", wholesalePrice: 110 },
+          { category: "PPR Standard Fittings", name: "Female Thread Union - 40mm", wholesalePrice: 350 },
+          { category: "PPR Standard Fittings", name: "Female Thread Union - 50mm", wholesalePrice: 550 },
+          { category: "PPR Standard Fittings", name: "Female Thread Union - 63mm", wholesalePrice: 1000 },
+          { category: "PPR Standard Fittings", name: "Over Bend - 20mm", wholesalePrice: 25 },
+          { category: "PPR Standard Fittings", name: "Over Bend - 25mm", wholesalePrice: 30 },
+          { category: "PPR Standard Fittings", name: "Over Bend - 32mm", wholesalePrice: 55 },
+          { category: "PPR Standard Fittings", name: "Pipe Clamp - 20mm", wholesalePrice: 5 },
+          { category: "PPR Standard Fittings", name: "Pipe Clamp - 25mm", wholesalePrice: 10 },
+          { category: "PPR Standard Fittings", name: "Pipe Clamp - 32mm", wholesalePrice: 15 },
+          { category: "PPR Standard Fittings", name: "Double Elbow - 20mm", wholesalePrice: 200 },
+          { category: "PPR Standard Fittings", name: "Double Elbow - 25mm", wholesalePrice: 250 },
+          { category: "PPR Standard Fittings", name: "Metal Valve - 20mm", wholesalePrice: 130 },
+          { category: "PPR Standard Fittings", name: "Metal Valve - 25mm", wholesalePrice: 160 },
+          { category: "PPR Standard Fittings", name: "Metal Valve - 32mm", wholesalePrice: 180 },
+          { category: "PPR Standard Fittings", name: "Metal Valve - 40mm", wholesalePrice: 500 },
+          { category: "PPR Standard Fittings", name: "Metal Valve - 50mm", wholesalePrice: 800 },
+          { category: "PPR Standard Fittings", name: "Metal Valve - 63mm", wholesalePrice: 1250 },
+          { category: "PPR Standard Fittings", name: "Concealed / Stop Cork - 20mm", wholesalePrice: 345 },
+          { category: "PPR Standard Fittings", name: "Concealed / Stop Cork - 25mm", wholesalePrice: 400 },
+          { category: "PPR Standard Fittings", name: "Concealed / Stop Cork - 32mm", wholesalePrice: 475 },
+          { category: "PPR Standard Fittings", name: "Male Thread Union - 20mm", wholesalePrice: 80 },
+          { category: "PPR Standard Fittings", name: "Male Thread Union - 25mm", wholesalePrice: 100 },
+          { category: "PPR Standard Fittings", name: "Male Thread Union - 32mm", wholesalePrice: 120 },
+          { category: "PPR Standard Fittings", name: "Male Thread Union - 40mm", wholesalePrice: 375 },
+          { category: "PPR Standard Fittings", name: "Male Thread Union - 50mm", wholesalePrice: 580 },
+          { category: "PPR Standard Fittings", name: "Male Thread Union - 63mm", wholesalePrice: 1100 },
+          { category: "PPR Standard Fittings", name: "Cross Tee - 20mm", wholesalePrice: 25 },
+          { category: "PPR Standard Fittings", name: "Cross Tee - 25mm", wholesalePrice: 40 },
+          { category: "PPR Standard Fittings", name: "Cross Tee - 32mm", wholesalePrice: 60 },
+          { category: "PPR Standard Fittings", name: "Adapter / Socket (S) - 20mm", wholesalePrice: 5 },
+          { category: "PPR Standard Fittings", name: "Adapter / Socket (S) - 25mm", wholesalePrice: 8 },
+          { category: "PPR Standard Fittings", name: "Adapter / Socket (S) - 32mm", wholesalePrice: 10 },
+          { category: "PPR Standard Fittings", name: "Adapter / Socket (S) - 40mm", wholesalePrice: 25 },
+          { category: "PPR Standard Fittings", name: "Adapter / Socket (S) - 50mm", wholesalePrice: 40 },
+          { category: "PPR Standard Fittings", name: "Adapter / Socket (S) - 63mm", wholesalePrice: 75 },
+          { category: "PPR Standard Fittings", name: "Elbow (L) - 20mm", wholesalePrice: 8 },
+          { category: "PPR Standard Fittings", name: "Elbow (L) - 25mm", wholesalePrice: 10 },
+          { category: "PPR Standard Fittings", name: "Elbow (L) - 32mm", wholesalePrice: 15 },
+          { category: "PPR Standard Fittings", name: "Elbow (L) - 40mm", wholesalePrice: 35 },
+          { category: "PPR Standard Fittings", name: "Elbow (L) - 50mm", wholesalePrice: 65 },
+          { category: "PPR Standard Fittings", name: "Elbow (L) - 63mm", wholesalePrice: 120 },
+          { category: "PPR Standard Fittings", name: "Tee (T) - 20mm", wholesalePrice: 10 },
+          { category: "PPR Standard Fittings", name: "Tee (T) - 25mm", wholesalePrice: 13 },
+          { category: "PPR Standard Fittings", name: "Tee (T) - 32mm", wholesalePrice: 20 },
+          { category: "PPR Standard Fittings", name: "Tee (T) - 40mm", wholesalePrice: 45 },
+          { category: "PPR Standard Fittings", name: "Tee (T) - 50mm", wholesalePrice: 75 },
+          { category: "PPR Standard Fittings", name: "Tee (T) - 63mm", wholesalePrice: 150 },
+          { category: "PPR Standard Fittings", name: "Union - 20mm", wholesalePrice: 15 },
+          { category: "PPR Standard Fittings", name: "Union - 25mm", wholesalePrice: 20 },
+          { category: "PPR Standard Fittings", name: "Union - 32mm", wholesalePrice: 30 },
+          { category: "PPR Standard Fittings", name: "Union - 40mm", wholesalePrice: 70 },
+          { category: "PPR Standard Fittings", name: "Union - 50mm", wholesalePrice: 150 },
+          { category: "PPR Standard Fittings", name: "Union - 63mm", wholesalePrice: 175 },
+          { category: "PPR Standard Fittings", name: "Cap - 20mm", wholesalePrice: 8 },
+          { category: "PPR Standard Fittings", name: "Cap - 25mm", wholesalePrice: 12 },
+          { category: "PPR Standard Fittings", name: "Cap - 32mm", wholesalePrice: 15 },
+          { category: "PPR Standard Fittings", name: "Plug - 20mm", wholesalePrice: 10 },
+          { category: "PPR Standard Fittings", name: "Plug - 25mm", wholesalePrice: 15 },
+          { category: "PPR Standard Fittings", name: "Plug - 32mm", wholesalePrice: 20 },
+
+          // PPR Threaded Fittings{ category: "PPR Threaded Fittings", name: "Male Adapter / Socket (M/S) - 20mm * 1/2\"", wholesalePrice: 25 },
+          { category: "PPR Threaded Fittings", name: "Male Adapter / Socket (M/S) - 25mm * 1/2\"", wholesalePrice: 30 },
+          { category: "PPR Threaded Fittings", name: "Male Adapter / Socket (M/S) - 25mm * 3/4\"", wholesalePrice: 35 },
+          { category: "PPR Threaded Fittings", name: "Male Adapter / Socket (M/S) - 32mm * 1/2\"", wholesalePrice: 40 },
+          { category: "PPR Threaded Fittings", name: "Male Adapter / Socket (M/S) - 32mm * 3/4\"", wholesalePrice: 45 },
+          { category: "PPR Threaded Fittings", name: "Male Adapter / Socket (M/S) - 32mm * 1\"", wholesalePrice: 50 },
+          { category: "PPR Threaded Fittings", name: "Male Adapter / Socket (M/S) - 40mm * 1 1/4\"", wholesalePrice: 120 },
+          { category: "PPR Threaded Fittings", name: "Male Adapter / Socket (M/S) - 40mm * 1\"", wholesalePrice: 100 },
+          { category: "PPR Threaded Fittings", name: "Male Adapter / Socket (M/S) - 50mm * 1 1/2\"", wholesalePrice: 160 },
+          { category: "PPR Threaded Fittings", name: "Male Adapter / Socket (M/S) - 50mm * 1\"", wholesalePrice: 120 },
+          { category: "PPR Threaded Fittings", name: "Male Adapter / Socket (M/S) - 63mm * 2\"", wholesalePrice: 225 },
+          { category: "PPR Threaded Fittings", name: "Male Elbow (M/L) - 20mm * 1/2\"", wholesalePrice: 20 },
+          { category: "PPR Threaded Fittings", name: "Male Elbow (M/L) - 25mm * 1/2\"", wholesalePrice: 25 },
+          { category: "PPR Threaded Fittings", name: "Male Elbow (M/L) - 25mm * 3/4\"", wholesalePrice: 30 },
+          { category: "PPR Threaded Fittings", name: "Male Elbow (M/L) - 32mm * 1/2\"", wholesalePrice: 45 },
+          { category: "PPR Threaded Fittings", name: "Male Elbow (M/L) - 32mm * 3/4\"", wholesalePrice: 40 },
+          { category: "PPR Threaded Fittings", name: "Male Elbow (M/L) - 32mm * 1\"", wholesalePrice: 50 },
+          { category: "PPR Threaded Fittings", name: "Male Elbow (M/L) - 40mm * 1 1/4\"", wholesalePrice: 120 },
+          { category: "PPR Threaded Fittings", name: "Male Elbow (M/L) - 40mm * 1\"", wholesalePrice: 100 },
+          { category: "PPR Threaded Fittings", name: "Male Elbow (M/L) - 50mm * 1 1/2\"", wholesalePrice: 200 },
+          { category: "PPR Threaded Fittings", name: "Male Elbow (M/L) - 50mm * 1\"", wholesalePrice: 150 },
+          { category: "PPR Threaded Fittings", name: "Male Elbow (M/L) - 63mm * 2\"", wholesalePrice: 300 },
+          { category: "PPR Threaded Fittings", name: "Male Tee (M/T) - 20mm * 1/2\"", wholesalePrice: 27 },
+          { category: "PPR Threaded Fittings", name: "Male Tee (M/T) - 25mm * 1/2\"", wholesalePrice: 30 },
+          { category: "PPR Threaded Fittings", name: "Male Tee (M/T) - 25mm * 3/4\"", wholesalePrice: 40 },
+          { category: "PPR Threaded Fittings", name: "Male Tee (M/T) - 32mm * 1/2\"", wholesalePrice: 45 },
+          { category: "PPR Threaded Fittings", name: "Male Tee (M/T) - 32mm * 3/4\"", wholesalePrice: 50 },
+          { category: "PPR Threaded Fittings", name: "Male Tee (M/T) - 32mm * 1\"", wholesalePrice: 65 },
+          { category: "PPR Threaded Fittings", name: "Male Tee (M/T) - 40mm * 1 1/4\"", wholesalePrice: 130 },
+          { category: "PPR Threaded Fittings", name: "Male Tee (M/T) - 40mm * 1\"", wholesalePrice: 180 },
+          { category: "PPR Threaded Fittings", name: "Male Tee (M/T) - 50mm * 1 1/2\"", wholesalePrice: 250 },
+          { category: "PPR Threaded Fittings", name: "Male Tee (M/T) - 50mm * 1\"", wholesalePrice: 150 },
+          { category: "PPR Threaded Fittings", name: "Male Tee (M/T) - 63mm * 2\"", wholesalePrice: 350 },
+          { category: "PPR Threaded Fittings", name: "Female Adapter / Socket (F/S) - 20mm * 1/2\"", wholesalePrice: 20 },
+          { category: "PPR Threaded Fittings", name: "Female Adapter / Socket (F/S) - 25mm * 1/2\"", wholesalePrice: 25 },
+          { category: "PPR Threaded Fittings", name: "Female Adapter / Socket (F/S) - 25mm * 3/4\"", wholesalePrice: 30 },
+          { category: "PPR Threaded Fittings", name: "Female Adapter / Socket (F/S) - 32mm * 1/2\"", wholesalePrice: 35 },
+          { category: "PPR Threaded Fittings", name: "Female Adapter / Socket (F/S) - 32mm * 3/4\"", wholesalePrice: 40 },
+          { category: "PPR Threaded Fittings", name: "Female Adapter / Socket (F/S) - 32mm * 1\"", wholesalePrice: 45 },
+          { category: "PPR Threaded Fittings", name: "Female Adapter / Socket (F/S) - 40mm * 1 1/4\"", wholesalePrice: 100 },
+          { category: "PPR Threaded Fittings", name: "Female Adapter / Socket (F/S) - 40mm * 1\"", wholesalePrice: 80 },
+          { category: "PPR Threaded Fittings", name: "Female Adapter / Socket (F/S) - 50mm * 1 1/2\"", wholesalePrice: 150 },
+          { category: "PPR Threaded Fittings", name: "Female Adapter / Socket (F/S) - 50mm * 1\"", wholesalePrice: 100 },
+          { category: "PPR Threaded Fittings", name: "Female Adapter / Socket (F/S) - 63mm * 2\"", wholesalePrice: 200 },
+          { category: "PPR Threaded Fittings", name: "Female Elbow (F/L) - 20mm * 1/2\"", wholesalePrice: 20 },
+          { category: "PPR Threaded Fittings", name: "Female Elbow (F/L) - 25mm * 1/2\"", wholesalePrice: 25 },
+          { category: "PPR Threaded Fittings", name: "Female Elbow (F/L) - 25mm * 3/4\"", wholesalePrice: 30 },
+          { category: "PPR Threaded Fittings", name: "Female Elbow (F/L) - 32mm * 1/2\"", wholesalePrice: 40 },
+          { category: "PPR Threaded Fittings", name: "Female Elbow (F/L) - 32mm * 3/4\"", wholesalePrice: 45 },
+          { category: "PPR Threaded Fittings", name: "Female Elbow (F/L) - 32mm * 1\"", wholesalePrice: 50 },
+          { category: "PPR Threaded Fittings", name: "Female Elbow (F/L) - 40mm * 1 1/4\"", wholesalePrice: 100 },
+          { category: "PPR Threaded Fittings", name: "Female Elbow (F/L) - 40mm * 1\"", wholesalePrice: 90 },
+          { category: "PPR Threaded Fittings", name: "Female Elbow (F/L) - 50mm * 1 1/2\"", wholesalePrice: 175 },
+          { category: "PPR Threaded Fittings", name: "Female Elbow (F/L) - 50mm * 1\"", wholesalePrice: 130 },
+          { category: "PPR Threaded Fittings", name: "Female Elbow (F/L) - 63mm * 2\"", wholesalePrice: 300 },
+          { category: "PPR Threaded Fittings", name: "Female Tee (F/T) - 20mm * 1/2\"", wholesalePrice: 25 },
+          { category: "PPR Threaded Fittings", name: "Female Tee (F/T) - 25mm * 1/2\"", wholesalePrice: 30 },
+          { category: "PPR Threaded Fittings", name: "Female Tee (F/T) - 25mm * 3/4\"", wholesalePrice: 35 },
+          { category: "PPR Threaded Fittings", name: "Female Tee (F/T) - 32mm * 1/2\"", wholesalePrice: 45 },
+          { category: "PPR Threaded Fittings", name: "Female Tee (F/T) - 32mm * 3/4\"", wholesalePrice: 45 },
+          { category: "PPR Threaded Fittings", name: "Female Tee (F/T) - 32mm * 1\"", wholesalePrice: 60 },
+          { category: "PPR Threaded Fittings", name: "Female Tee (F/T) - 40mm * 1 1/4\"", wholesalePrice: 120 },
+          { category: "PPR Threaded Fittings", name: "Female Tee (F/T) - 40mm * 1\"", wholesalePrice: 150 },
+          { category: "PPR Threaded Fittings", name: "Female Tee (F/T) - 50mm * 1 1/2\"", wholesalePrice: 250 },
+          { category: "PPR Threaded Fittings", name: "Female Tee (F/T) - 50mm * 1\"", wholesalePrice: 150 },
+          { category: "PPR Threaded Fittings", name: "Female Tee (F/T) - 63mm * 2\"", wholesalePrice: 350 },
+
+          // PPR Pipes & Rolls
+          { category: "PPR Pipes & Rolls", name: "PPR Pipe - 20mm", wholesalePrice: 120 },
+          { category: "PPR Pipes & Rolls", name: "PPR Pipe - 25mm", wholesalePrice: 180 },
+          { category: "PPR Pipes & Rolls", name: "PPR Pipe - 32mm", wholesalePrice: 280 },
+          { category: "PPR Pipes & Rolls", name: "PPR Pipe - 40mm", wholesalePrice: 550 },
+          { category: "PPR Pipes & Rolls", name: "PPR Pipe - 50mm", wholesalePrice: 850 },
+          { category: "PPR Pipes & Rolls", name: "PPR Pipe - 63mm", wholesalePrice: 1400 },
+          { category: "PPR Pipes & Rolls", name: "PPR Roll - 20mm", wholesalePrice: 2800 },
+          { category: "PPR Pipes & Rolls", name: "PPR Roll - 25mm", wholesalePrice: 4400 },
+          { category: "PPR Pipes & Rolls", name: "PPR Roll - 32mm", wholesalePrice: 5500 },
+          { category: "PPR Pipes & Rolls", name: "PPR Roll - 40mm", wholesalePrice: 7500 },
+          { category: "PPR Pipes & Rolls", name: "PPR Roll - 50mm", wholesalePrice: 12000 },
+          { category: "PPR Pipes & Rolls", name: "PPR Roll - 63mm", wholesalePrice: 18500 },
+
+          // Electricals & Electrical Fittings
+          { category: "Electricals & Electrical Fittings", name: "Conduit - 20mm LG", wholesalePrice: 65 },
+          { category: "Electricals & Electrical Fittings", name: "Conduit - 20mm HG", wholesalePrice: 67 },
+          { category: "Electricals & Electrical Fittings", name: "Conduit - 25mm HG", wholesalePrice: 190 },
+          { category: "Electricals & Electrical Fittings", name: "Conduit - 32mm HG", wholesalePrice: 220 },
+          { category: "Electricals & Electrical Fittings", name: "Conduit - 50mm HG", wholesalePrice: 350 },
+          { category: "Electricals & Electrical Fittings", name: "Tranking - 25mm x 16mm", wholesalePrice: 70 },
+
+          // Waste & Drainage Fittings
+          { category: "Waste & Drainage Fittings", name: "Waste Bend 90 - 1 1/2\"", wholesalePrice: 20 },
+          { category: "Waste & Drainage Fittings", name: "Waste Bend 90 - 2\"", wholesalePrice: 25 },
+          { category: "Waste & Drainage Fittings", name: "Waste Bend 90 - 3\"", wholesalePrice: 70 },
+          { category: "Waste & Drainage Fittings", name: "Waste Bend 90 - 4\"", wholesalePrice: 75 },
+          { category: "Waste & Drainage Fittings", name: "Waste Bend 90 - 6\"", wholesalePrice: 450 },
+          { category: "Waste & Drainage Fittings", name: "Waste Bend 45 - 1 1/4\"", wholesalePrice: 20 },
+          { category: "Waste & Drainage Fittings", name: "Waste Bend 45 - 1 1/2\"", wholesalePrice: 20 },
+          { category: "Waste & Drainage Fittings", name: "Waste Bend 45 - 2\"", wholesalePrice: 25 },
+          { category: "Waste & Drainage Fittings", name: "Waste Bend 45 - 3\"", wholesalePrice: 70 },
+          { category: "Waste & Drainage Fittings", name: "Waste Bend 45 - 4\"", wholesalePrice: 75 },
+          { category: "Waste & Drainage Fittings", name: "Waste Bend 45 - 6\"", wholesalePrice: 450 },
+          { category: "Waste & Drainage Fittings", name: "Waste Plug - 1 1/2\"", wholesalePrice: 30 },
+          { category: "Waste & Drainage Fittings", name: "Waste Plug - 1 3/4\"", wholesalePrice: 25 },
+          { category: "Waste & Drainage Fittings", name: "Waste Plug - 2\"", wholesalePrice: 35 },
+          { category: "Waste & Drainage Fittings", name: "Waste Plug - 3\"", wholesalePrice: 90 },
+          { category: "Waste & Drainage Fittings", name: "Waste Plug - 4\"", wholesalePrice: 100 },
+          { category: "Waste & Drainage Fittings", name: "Waste Tee - 1 1/4\"", wholesalePrice: 30 },
+          { category: "Waste & Drainage Fittings", name: "Waste Tee - 1 1/2\"", wholesalePrice: 30 },
+          { category: "Waste & Drainage Fittings", name: "Waste Tee - 2\"", wholesalePrice: 50 },
+          { category: "Waste & Drainage Fittings", name: "Waste Tee - 3\"", wholesalePrice: 100 },
+          { category: "Waste & Drainage Fittings", name: "Waste Tee - 4\"", wholesalePrice: 170 },
+          { category: "Waste & Drainage Fittings", name: "Waste Tee - 6\"", wholesalePrice: 700 },
+          { category: "Waste & Drainage Fittings", name: "Reducing Bush - 6mm * 4mm", wholesalePrice: 350 },
+          { category: "Waste & Drainage Fittings", name: "Reducing Bush - 4mm * 3mm", wholesalePrice: 70 },
+          { category: "Waste & Drainage Fittings", name: "Reducing Bush - 4mm * 2mm", wholesalePrice: 70 },
+          { category: "Waste & Drainage Fittings", name: "Reducing Bush - 3mm * 2mm", wholesalePrice: 60 },
+          { category: "Waste & Drainage Fittings", name: "Reducing Bush - 2mm * 1 1/2\"", wholesalePrice: 30 },
+          { category: "Waste & Drainage Fittings", name: "Cross Tee - 4\"", wholesalePrice: 250 },
+          { category: "Waste & Drainage Fittings", name: "Cross Tee - 2\"", wholesalePrice: 150 },
+          { category: "Waste & Drainage Fittings", name: "Inspection Tee - 4\"", wholesalePrice: 200 },
+          { category: "Waste & Drainage Fittings", name: "Inspection Bend - 4\"", wholesalePrice: 180 },
+          { category: "Waste & Drainage Fittings", name: "Gully Trap - 4\"", wholesalePrice: 80 },
+          { category: "Waste & Drainage Fittings", name: "Vent Cup - 4\"", wholesalePrice: 30 },
+          { category: "Waste & Drainage Fittings", name: "Floor Trap 1-Way - 4\" * 2\"", wholesalePrice: 170 },
+          { category: "Waste & Drainage Fittings", name: "Floor Trap 4-Way - 4\" * 2\"", wholesalePrice: 200 },
+          { category: "Waste & Drainage Fittings", name: "Floor Trap Grill - 4\"", wholesalePrice: 30 },
+          { category: "Waste & Drainage Fittings", name: "Floor Trap Inlet - 4\"", wholesalePrice: 80 },
+
+          // Taps, Valves & Brass Fittings
+          { category: "Taps, Valves & Brass Fittings", name: "Ordinary Tap - 1/2\"", wholesalePrice: 350 },
+          { category: "Taps, Valves & Brass Fittings", name: "Ordinary Tap - 3/4\"", wholesalePrice: 420 },
+          { category: "Taps, Valves & Brass Fittings", name: "Concealed Stopcork - Cobra", wholesalePrice: 900 },
+          { category: "Taps, Valves & Brass Fittings", name: "Concealed Stopcork - Big LR", wholesalePrice: 700 },
+          { category: "Taps, Valves & Brass Fittings", name: "Lirlee Pillar Tap - Knob", wholesalePrice: 450 },
+          { category: "Taps, Valves & Brass Fittings", name: "Lirlee Pillar Tap - Star", wholesalePrice: 450 },
+          { category: "Taps, Valves & Brass Fittings", name: "Pillar Tap - Knob Ezuri", wholesalePrice: 420 },
+          { category: "Taps, Valves & Brass Fittings", name: "Pillar Tap - Star/Knob Goldwit", wholesalePrice: 420 },
+          { category: "Taps, Valves & Brass Fittings", name: "Wall Tap - Long & Short Neck", wholesalePrice: 400 },
+          { category: "Taps, Valves & Brass Fittings", name: "Flamingo Wall & Pillar - LR", wholesalePrice: 650 },
+          { category: "Taps, Valves & Brass Fittings", name: "Flamingo Wall & Pillar - Goldwit", wholesalePrice: 600 },
+          { category: "Taps, Valves & Brass Fittings", name: "Lockable Tap - 3/4\" LR", wholesalePrice: 450 },
+          { category: "Taps, Valves & Brass Fittings", name: "Lockable Tap - 1/2\" LR", wholesalePrice: 450 },
+          { category: "Taps, Valves & Brass Fittings", name: "Lockable Tap - 3/4\" Pegler", wholesalePrice: 480 },
+          { category: "Taps, Valves & Brass Fittings", name: "Lockable Tap - 1/2\" Pegler", wholesalePrice: 450 },
+          { category: "Taps, Valves & Brass Fittings", name: "Angle Valve - LR", wholesalePrice: 200 },
+          { category: "Taps, Valves & Brass Fittings", name: "Gate Valve - 2\" LR", wholesalePrice: 3200 },
+          { category: "Taps, Valves & Brass Fittings", name: "Gate Valve - 1 1/2\" LR", wholesalePrice: 1800 },
+          { category: "Taps, Valves & Brass Fittings", name: "Gate Valve - 1 1/4\" LR", wholesalePrice: 1700 },
+          { category: "Taps, Valves & Brass Fittings", name: "Gate Valve - 1\" LR", wholesalePrice: 850 },
+          { category: "Taps, Valves & Brass Fittings", name: "Gate Valve - 3/4\" LR", wholesalePrice: 500 },
+          { category: "Taps, Valves & Brass Fittings", name: "Gate Valve - 1/2\" LR", wholesalePrice: 300 },
+          { category: "Taps, Valves & Brass Fittings", name: "Foot Valve - 1/2\"", wholesalePrice: 320 },
+          { category: "Taps, Valves & Brass Fittings", name: "Foot Valve - 3/4\"", wholesalePrice: 450 },
+          { category: "Taps, Valves & Brass Fittings", name: "Foot Valve - 1\"", wholesalePrice: 600 },
+          { category: "Taps, Valves & Brass Fittings", name: "Non Return Valve - 1/2\"", wholesalePrice: 400 },
+          { category: "Taps, Valves & Brass Fittings", name: "Non Return Valve - 3/4\"", wholesalePrice: 550 },
+          { category: "Taps, Valves & Brass Fittings", name: "Non Return Valve - 1\"", wholesalePrice: 750 },
+
+          // Sanitaryware & Accessories
+          { category: "Sanitaryware & Accessories", name: "Close Couple Water Closet - Frencia", wholesalePrice: 9000 },
+          { category: "Sanitaryware & Accessories", name: "Close Couple Water Closet - Blossom", wholesalePrice: 9000 },
+          { category: "Sanitaryware & Accessories", name: "P Trap - Frencia", wholesalePrice: 2100 },
+          { category: "Sanitaryware & Accessories", name: "P Trap - Blossom", wholesalePrice: 2100 },
+          { category: "Sanitaryware & Accessories", name: "Wash Hand Basin - 18mm x 12mm", wholesalePrice: 1240 },
+          { category: "Sanitaryware & Accessories", name: "Asian Toilet", wholesalePrice: 650 },
+          { category: "Sanitaryware & Accessories", name: "Step Asian Toilet", wholesalePrice: 550 },
+          { category: "Sanitaryware & Accessories", name: "Manhole Cover - 18mm x 24mm", wholesalePrice: 450 },
+          { category: "Sanitaryware & Accessories", name: "Manhole Cover - 18mm x 18mm", wholesalePrice: 1300 },
+          { category: "Sanitaryware & Accessories", name: "Steel Nails (All Sizes)", wholesalePrice: 180 },
+          { category: "Sanitaryware & Accessories", name: "Silicone Sealant 2500 - Clear", wholesalePrice: 180 },
+          { category: "Sanitaryware & Accessories", name: "Silicone Sealant 2500 - Black", wholesalePrice: 180 },
+          { category: "Sanitaryware & Accessories", name: "Square Bowl - Heavy", wholesalePrice: 1100 },
+          { category: "Sanitaryware & Accessories", name: "Square Bowl - Medium", wholesalePrice: 1000 },
+          { category: "Sanitaryware & Accessories", name: "Single Bowl Single Tray - H", wholesalePrice: 1450 },
+          { category: "Sanitaryware & Accessories", name: "Single Bowl Single Tray - L", wholesalePrice: 1250 },
+          { category: "Sanitaryware & Accessories", name: "Double Bowl Single Tray - H", wholesalePrice: 3000 },
+          { category: "Sanitaryware & Accessories", name: "Double Bowl Double Tray", wholesalePrice: 3500 },
+          { category: "Sanitaryware & Accessories", name: "Instant Shower", wholesalePrice: 2000 },
+          { category: "Sanitaryware & Accessories", name: "Toilet Screws (Small)", wholesalePrice: 1500 },
+          { category: "Sanitaryware & Accessories", name: "Basin Screws", wholesalePrice: 100 }
         ];
 
         /* --- DATA PERSISTENCE --- */
@@ -871,7 +1107,15 @@
                 announcements = JSON.parse(localStorage.getItem('bs_announcements') || '[]');
             } else {
                 users = [...defaultUsers];
-                inventory = [...defaultInventorySeed];
+                // Map the suggestion list to inventory format with default quantities and retail pricing (e.g., 25% markup)
+                inventory = defaultInventorySuggestions.map((item, idx) => ({
+                    id: 300 + idx,
+                    name: item.name,
+                    category: item.category,
+                    qty: 50,
+                    wholesale: item.wholesalePrice,
+                    retail: Math.round(item.wholesalePrice * 1.3)
+                }));
                 saveData();
             }
         }
@@ -1016,7 +1260,7 @@
         }
 
         /* --- POS SALES & PRINTING RECEIPTS --- */
-function renderPOSCatalog() {
+        function renderPOSCatalog() {
             let tbody = document.getElementById('pos-catalog');
             if(!tbody) return;
             tbody.innerHTML = '';
@@ -1267,7 +1511,7 @@ function renderPOSCatalog() {
             document.getElementById('an-expenses').innerText = `Ksh ${(totalSales * 0.2).toLocaleString()}`; // Estimated
             
             const insights = [
-                `Based on ${invoices.length} active receipts, increasing stock depth on top-selling Waste & Drainage lines will protect your profit margins.`,
+                `Based on ${invoices.length} active receipts, increasing stock depth on top-selling fittings will protect your profit margins.`,
                 `Your current inventory valuation stands at Ksh ${totalInvWorth.toLocaleString()}. Consider bundling slow-moving PPR pipes with electrical sales.`,
                 `Cash flow is stable. Implementing slight cross-selling techniques at the counter could boost average ticket size by 15%.`,
                 `Data indicates positive trends. Ensure you reconcile daily to prevent shrinkage against your live inventory worth of Ksh ${totalInvWorth.toLocaleString()}.`
@@ -1277,21 +1521,13 @@ function renderPOSCatalog() {
             el.innerText = randomInsight;
         }
 
-        /* --- GENERAL DASHBOARD METRICS --- */
         function updateDashboardMetrics() {
-            let totalRev = invoices.reduce((s,i) => s + i.total, 0);
-            let totalInv = inventory.reduce((s,i) => s + (i.qty * i.wholesale), 0);
-            
-            document.getElementById('dash-metric-rev').innerText = `KES ${totalRev.toLocaleString()}`;
+            let totalSales = invoices.reduce((s, i) => s + i.total, 0);
+            let totalInvWorth = inventory.reduce((s, i) => s + (i.qty * i.wholesale), 0);
+            document.getElementById('dash-metric-rev').innerText = `KES ${totalSales.toLocaleString()}`;
             document.getElementById('dash-metric-orders').innerText = invoices.length;
-            document.getElementById('dash-metric-inv-worth').innerText = `KES ${totalInv.toLocaleString()}`;
+            document.getElementById('dash-metric-inv-worth').innerText = `KES ${totalInvWorth.toLocaleString()}`;
             document.getElementById('dash-metric-products').innerText = inventory.length;
-        }
-
-        function renderAccounts() {
-            let totalInv = inventory.reduce((s,i) => s + (i.qty * i.wholesale), 0);
-            document.getElementById('bs-ast-inv').innerText = `Ksh ${totalInv.toLocaleString()}`;
-            document.getElementById('bs-ast-total').innerText = `Ksh ${totalInv.toLocaleString()}`;
         }
     </script>
 </body>
